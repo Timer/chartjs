@@ -72,7 +72,6 @@
         fontSize_axis: 20,
         fontSize_ticks: 18,
         fontSize_labels: 18,
-        maxValue_padding: 0.25,
         barPaddingPercent: 0.10,
         padding_vertical: 10,
         padding_horizontal: 10,
@@ -117,7 +116,7 @@
 
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
-      var maxChartValue = Helpers.upperMax(content.data) * (1 + options.maxValue_padding);
+      var maxChartValue = Helpers.upperMax(content.data);
       var maxYAxisTickWidth = Math.ceil(ctx.measureText(maxChartValue + '').width);
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
