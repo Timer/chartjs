@@ -1,3 +1,4 @@
+/*global module:true*/
 'use strict';
 (function() {
   var Helpers = {
@@ -80,6 +81,7 @@
       var ctx = this.ctx, content = this.content;
       var width = ctx.canvas.width, height = ctx.canvas.height;
       var remainingWidth = width, remainingHeight = height;
+      var index;
 
       if (options.fillColor_background != null) {
         ctx.save();
@@ -144,7 +146,7 @@
       ctx.font = options.fontSize_labels + 'px ' + options.font;
       var widthPerBar = remainingWidth / content.data.length;
       var computedBarPadding = Math.floor((widthPerBar * options.barPaddingPercent) / 2);
-      for (var index = 0; index < content.labels.length; ++index) {
+      for (index = 0; index < content.labels.length; ++index) {
         ctx.fillText(
           content.labels[index],
           leftXPadding + index * widthPerBar + widthPerBar / 2,
@@ -184,7 +186,7 @@
       ctx.save();
       ctx.strokeStyle = 'rgb(0, 0, 0)';
       ctx.fillStyle = 'rgb(180, 180, 180)';
-      for (var index = 0; index < content.data.length; ++index) {
+      for (index = 0; index < content.data.length; ++index) {
         var v = content.data[index];
         if (Array.isArray(v)) v = Helpers.avg(v);
         var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
