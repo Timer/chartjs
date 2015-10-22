@@ -172,9 +172,9 @@ Math.log10 = Math.log10 || function(x) {
         ctx.font = options.fontSize_axis + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
-        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - options.fontSize_axis * 0.25 - bottomYPadding);
-        remainingHeight -= options.fontSize_axis * 1.25;
-        bottomYPadding += options.fontSize_axis * 1.25;
+        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - bottomYPadding);
+        remainingHeight -= options.fontSize_axis;
+        bottomYPadding += options.fontSize_axis;
         ctx.restore();
       }
 
