@@ -82,7 +82,9 @@ Math.log10 = Math.log10 || function(x) {
         padding_vertical: 10,
         padding_horizontal: 10,
         padding_ticks: 10,
-        fillColor_background: 'rgb(220, 220, 220)'
+        fillColor_background: 'rgb(220, 220, 220)',
+        strokeColor_bar: 'rgb(0, 0, 0)',
+        fillColor_bar: 'rgb(180, 180, 180)'
       };
       options = options || { };
       for (var key in this.options) {
@@ -233,8 +235,8 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
-      ctx.strokeStyle = 'rgb(0, 0, 0)';
-      ctx.fillStyle = 'rgb(180, 180, 180)';
+      ctx.strokeStyle = options.strokeColor_bar;
+      ctx.fillStyle = options.fillColor_bar;
       for (index = 0; index < content.data.length; ++index) {
         var v = content.data[index];
         if (Array.isArray(v)) v = Helpers.avg(v);
