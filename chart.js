@@ -71,7 +71,23 @@ Math.log10 = Math.log10 || function(x) {
   };
 
   var BarChart = (function() {
-    function BarChart(ctx) {
+    function BarChart(ctx, options) {
+      this.options = {
+        font: 'Helvetica',
+        fontSize_title: 24,
+        fontSize_axis: 20,
+        fontSize_ticks: 18,
+        fontSize_labels: 18,
+        barPaddingPercent: 0.10,
+        padding_vertical: 10,
+        padding_horizontal: 10,
+        padding_ticks: 10,
+        fillColor_background: 'rgb(220, 220, 220)'
+      };
+      options = options || { };
+      for (var key in this.options) {
+        if (options.hasOwnProperty(key)) this.options[key] = options[key];
+      }
       this.ctx = ctx;
       this.content = { };
     }
@@ -97,18 +113,7 @@ Math.log10 = Math.log10 || function(x) {
     };
 
     BarChart.prototype._draw = function() {
-      var options = {
-        font: 'Helvetica',
-        fontSize_title: 24,
-        fontSize_axis: 20,
-        fontSize_ticks: 18,
-        fontSize_labels: 18,
-        barPaddingPercent: 0.10,
-        padding_vertical: 10,
-        padding_horizontal: 10,
-        padding_ticks: 10,
-        fillColor_background: 'rgb(220, 220, 220)'
-      };
+      var options = this.options;
       var ctx = this.ctx, content = this.content;
       var width = ctx.canvas.width, height = ctx.canvas.height;
       var remainingWidth = width, remainingHeight = height;
@@ -213,7 +218,7 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       ctx.textAlign = 'right';
-      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * 1.25)));
+      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * 1.10)));
       maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSize_ticks);
       var ticks = [];
       while (tickMeta[0] <= tickMeta[1]) {
