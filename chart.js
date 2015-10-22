@@ -79,6 +79,7 @@ Math.log10 = Math.log10 || function(x) {
         fontSize_ticks: 18,
         fontSize_labels: 18,
         barPaddingPercent: 0.10,
+        tickPaddingPercent: 0.10,
         padding_vertical: 10,
         padding_horizontal: 10,
         padding_ticks: 10,
@@ -221,7 +222,7 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       ctx.textAlign = 'right';
-      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * 1.10)));
+      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * (1 + options.tickPaddingPercent))));
       maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSize_ticks);
       var ticks = [];
       while (tickMeta[0] <= tickMeta[1]) {
