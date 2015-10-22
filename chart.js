@@ -1,5 +1,10 @@
 /*global module:true*/
 'use strict';
+
+Math.log10 = Math.log10 || function(x) {
+  return Math.log(x) / Math.LN10;
+};
+
 (function() {
   var Helpers = {
     avg: function(arr) {
@@ -36,6 +41,32 @@
         if (v2 > v) v = v2;
       }
       return Math.max(0, v);
+    },
+    niceNumbers: function(range, round) {
+      var exponent = Math.floor(Math.log10(range));
+      var fraction = range / Math.pow(10, exponent);
+      var niceFraction;
+      if (round) {
+        if (fraction < 1.5) niceFraction = 1;
+        else if (fraction < 3) niceFraction = 2;
+        else if (fraction < 7) niceFraction = 5;
+        else niceFraction = 10;
+      } else {
+        if (fraction <= 1.0) niceFraction = 1;
+        else if (fraction <= 2) niceFraction = 2;
+        else if (fraction <= 5) niceFraction = 5;
+        else niceFraction = 10;
+      }
+      return niceFraction * Math.pow(10, exponent);
+    },
+    getLinearTicks: function(min, max, maxTicks) {
+      var range = Helpers.niceNumbers(max - min, false);
+      var tickSpacing = Helpers.niceNumbers(range / (maxTicks - 1), true);
+      return [
+        Math.floor(min / tickSpacing) * tickSpacing,
+        Math.ceil(max / tickSpacing) * tickSpacing,
+        tickSpacing
+      ];
     }
   };
 
@@ -179,6 +210,19 @@
 
       /* Draw y-axis labels */
       ctx.save();
+      ctx.font = options.fontSize_ticks + 'px ' + options.font;
+      ctx.textAlign = 'right';
+      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * 1.25)));
+      maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSize_ticks);
+      var ticks = [];
+      while (tickMeta[0] <= tickMeta[1]) {
+        ticks.push(tickMeta[0]);
+        tickMeta[0] += tickMeta[2];
+      }
+      for (index = 0; index < ticks.length; ++index) {
+        var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
+        ctx.fillText(ticks[index] + '', leftXPadding - 10, topYPadding + remainingHeight - tickHeight);
+      }
       ctx.restore();
 
       /* Draw bars */
