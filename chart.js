@@ -73,7 +73,8 @@
         fontSize_labels: 18,
         maxValue_padding: 0.25,
         barPaddingPercent: 0.10,
-        padding_vertical: 20,
+        padding_vertical: 10,
+        padding_horizontal: 10,
         fillColor_background: 'rgb(220, 220, 220)'
       };
       var ctx = this.ctx, content = this.content;
@@ -87,14 +88,15 @@
         ctx.restore();
       }
 
-      var topYPadding = 0;
+      var topYPadding = options.padding_horizontal;
+      remainingHeight -= options.padding_horizontal;
       ctx.fillStyle = 'rgb(0, 0, 0)';
       /* Draw title of bar chart */
       if (content.title != null) {
         ctx.save();
         ctx.font = options.fontSize_title + 'px ' + options.font;
         ctx.textAlign = 'center';
-        ctx.fillText(content.title, width / 2, options.fontSize_title);
+        ctx.fillText(content.title, width / 2, topYPadding + options.fontSize_title);
         ctx.restore();
         remainingHeight -= options.fontSize_title * 1.25;
         topYPadding += options.fontSize_title * 1.25;
@@ -104,6 +106,13 @@
       var leftXPadding = options.padding_vertical;
       remainingWidth  -= options.padding_vertical;
 
+      var leftXDrawYLabel = null;
+      if (content.yAxis != null) {
+        leftXDrawYLabel = leftXPadding + options.fontSize_axis * 0.5;
+        remainingWidth -= options.fontSize_axis * 1.25;
+        leftXPadding += options.fontSize_axis * 1.25;
+      }
+
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       var maxChartValue = Helpers.upperMax(content.data) * (1 + options.maxValue_padding);
@@ -111,22 +120,19 @@
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
       ctx.restore();
-      if (content.yAxis != null) {
-        remainingWidth -= options.fontSize_axis * 1.25;
-        leftXPadding += options.fontSize_axis * 1.25;
-      }
 
       var rightXPadding = options.padding_vertical;
       remainingWidth -= options.padding_vertical;
 
       /* Draw x-axis label of bar chart */
-      var bottomYPadding = 0;
+      var bottomYPadding = options.padding_horizontal;
+      remainingHeight -= options.padding_horizontal;
       if (content.xAxis != null) {
         ctx.save();
         ctx.font = options.fontSize_axis + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
-        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - options.fontSize_axis * 0.25);
+        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - options.fontSize_axis * 0.25 - bottomYPadding);
         remainingHeight -= options.fontSize_axis * 1.25;
         bottomYPadding += options.fontSize_axis * 1.25;
         ctx.restore();
@@ -166,7 +172,7 @@
         ctx.font = options.fontSize_axis + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
-        ctx.fillText(content.yAxis, -(topYPadding + remainingHeight / 2), options.fontSize_axis);
+        ctx.fillText(content.yAxis, -(topYPadding + remainingHeight / 2), leftXDrawYLabel);
         ctx.restore();
       }
 
