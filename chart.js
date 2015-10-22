@@ -106,6 +106,7 @@ Math.log10 = Math.log10 || function(x) {
         barPaddingPercent: 0.10,
         padding_vertical: 10,
         padding_horizontal: 10,
+        padding_ticks: 10,
         fillColor_background: 'rgb(220, 220, 220)'
       };
       var ctx = this.ctx, content = this.content;
@@ -148,7 +149,7 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       var maxChartValue = Helpers.upperMax(content.data);
-      var maxYAxisTickWidth = Math.ceil(ctx.measureText(maxChartValue + '').width);
+      var maxYAxisTickWidth = Math.ceil(ctx.measureText(Math.ceil(Math.max(maxChartValue, 100))).width) + options.padding_ticks;
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
       ctx.restore();
@@ -221,7 +222,7 @@ Math.log10 = Math.log10 || function(x) {
       }
       for (index = 0; index < ticks.length; ++index) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
-        ctx.fillText(ticks[index] + '', leftXPadding - 10, topYPadding + remainingHeight - tickHeight);
+        ctx.fillText(ticks[index] + '', leftXPadding - options.padding_ticks, topYPadding + remainingHeight - tickHeight);
       }
       ctx.restore();
 
