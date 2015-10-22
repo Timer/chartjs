@@ -126,7 +126,7 @@
         ctx.font = options.fontSize_axis + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
-        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - options.fontSize_axis / 2);
+        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - options.fontSize_axis * 0.25);
         remainingHeight -= options.fontSize_axis * 1.25;
         bottomYPadding += options.fontSize_axis * 1.25;
         ctx.restore();
@@ -161,7 +161,12 @@
       /* Draw y-axis label of bar chart */
       if (content.yAxis != null) {
         ctx.save();
+        ctx.translate(0, 0);
+        ctx.rotate(Math.PI * 1.5);
         ctx.font = options.fontSize_axis + 'px ' + options.font;
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.textAlign = 'center';
+        ctx.fillText(content.yAxis, -(topYPadding + remainingHeight / 2), options.fontSize_axis);
         ctx.restore();
       }
 
