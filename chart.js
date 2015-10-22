@@ -1,6 +1,10 @@
 /*global module:true*/
 'use strict';
 
+Math.log2 = Math.log2 || function(x) {
+  return Math.log(x) / Math.LN2;
+};
+
 Math.log10 = Math.log10 || function(x) {
   return Math.log(x) / Math.LN10;
 };
@@ -85,7 +89,8 @@ Math.log10 = Math.log10 || function(x) {
         padding_ticks: 10,
         fillColor_background: 'rgb(220, 220, 220)',
         strokeColor_bar: 'rgb(0, 0, 0)',
-        fillColor_bar: 'rgb(180, 180, 180)'
+        fillColor_bar: 'rgb(180, 180, 180)',
+        scaleStyle: 'linear'
       };
       options = options || { };
       for (var key in this.options) {
@@ -104,6 +109,13 @@ Math.log10 = Math.log10 || function(x) {
         throw new Error('Labels and data must be arrays.');
       } else if (content.labels.length !== content.data.length) {
         throw new Error('Labels and data length must match.');
+      }
+      if (this.options.scaleStyle === 'log2') {
+        for (var i = 0; i < content.data.length; ++i) {
+          if (Array.isArray(content.data[i])) {
+            for (var i2 = 0; i2 < content.data[i].length; ++i2) content.data[i][i2] = Math.log2(content.data[i][i2]);
+          } else content.data[i] = Math.log2(content.data[i]);
+        }
       }
       this.content = content;
       this.redraw();
@@ -158,7 +170,9 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       var maxChartValue = Helpers.upperMax(content.data);
-      var maxYAxisTickWidth = Math.ceil(ctx.measureText(Math.ceil(Math.max(maxChartValue, 100))).width) + options.padding_ticks;
+      var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : maxChartValue;
+      maxYAxisTickWidth = ctx.measureText(Math.max(maxYAxisTickWidth, 100)).width;
+      maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.padding_ticks;
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
       ctx.restore();
@@ -231,6 +245,7 @@ Math.log10 = Math.log10 || function(x) {
       }
       for (index = 0; index < ticks.length; ++index) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
+        if (options.scaleStyle == 'log2') ticks[index] = Math.round(Math.pow(2, ticks[index]));
         ctx.fillText(ticks[index] + '', leftXPadding - options.padding_ticks, topYPadding + remainingHeight - tickHeight);
       }
       ctx.restore();
