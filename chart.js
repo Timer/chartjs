@@ -90,7 +90,8 @@ Math.log10 = Math.log10 || function(x) {
         fillColor_background: 'rgb(220, 220, 220)',
         strokeColor_bar: 'rgb(0, 0, 0)',
         fillColor_bar: 'rgb(180, 180, 180)',
-        scaleStyle: 'linear'
+        scaleStyle: 'linear',
+        errorBars: 'none'
       };
       options = options || { };
       for (var key in this.options) {
@@ -110,10 +111,24 @@ Math.log10 = Math.log10 || function(x) {
       } else if (content.labels.length !== content.data.length) {
         throw new Error('Labels and data length must match.');
       }
-      if (this.options.scaleStyle === 'log2') {
-        for (var i = 0; i < content.data.length; ++i) {
-          if (Array.isArray(content.data[i])) {
-            for (var i2 = 0; i2 < content.data[i].length; ++i2) content.data[i][i2] = Math.log2(content.data[i][i2]);
+      content._data_standard_deviation = [];
+      content._data_standard_error = [];
+      for (var i = 0; i < content.data.length; ++i) {
+        var isArr = Array.isArray(content.data[i]);
+        if (isArr) {
+          var mean = Helpers.avg(content.data[i]);
+          var acc = 0;
+          for (var i2 = 0; i2 < content.data[i].length; ++i2) acc += Math.pow(mean - content.data[i][i2], 2);
+          acc = Math.sqrt(acc / (content.data[i].length - 1));
+          content._data_standard_deviation.push(acc);
+          content._data_standard_error.push(acc / Math.sqrt(content.data[i].length));
+        } else {
+          content._data_standard_deviation.push(0);
+          content._data_standard_error.push(0);
+        }
+        if (this.options.scaleStyle === 'log2') {
+          if (isArr) {
+            for (var i3 = 0; i3 < content.data[i].length; ++i3) content.data[i][i3] = Math.log2(content.data[i][i3]);
           } else content.data[i] = Math.log2(content.data[i]);
         }
       }
@@ -265,13 +280,32 @@ Math.log10 = Math.log10 || function(x) {
         var v = content.data[index];
         if (Array.isArray(v)) v = Helpers.avg(v);
         var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
+        var renderStartX = leftXPadding + widthPerBar * index;
+        var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
         ctx.beginPath();
-        ctx.moveTo(leftXPadding + widthPerBar * index + computedBarPadding, topYPadding + remainingHeight);
-        ctx.lineTo(leftXPadding + widthPerBar * index + computedBarPadding, topYPadding + remainingHeight - renderBarHeight);
-        ctx.lineTo(leftXPadding + widthPerBar * index + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight - renderBarHeight);
-        ctx.lineTo(leftXPadding + widthPerBar * index + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight);
+        ctx.moveTo(renderStartX + computedBarPadding, topYPadding + remainingHeight);
+        ctx.lineTo(renderStartX + computedBarPadding, renderUpToY);
+        ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, renderUpToY);
+        ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight);
         ctx.stroke();
         ctx.fill();
+
+        if (options.errorBars === 'error') {
+          var val;
+          if ((val = content._data_standard_error[index]) != 0) {
+            var renderBarError = Math.round(remainingHeight * (val / maxChartValue));
+            ctx.beginPath();
+            var wiskerWidth = Math.round((widthPerBar - computedBarPadding * 2) / 8);
+            var x = leftXPadding + widthPerBar * index + widthPerBar / 2;
+            ctx.moveTo(x - wiskerWidth, renderUpToY + renderBarError);
+            ctx.lineTo(x + wiskerWidth, renderUpToY + renderBarError);
+            ctx.moveTo(x, renderUpToY + renderBarError);
+            ctx.lineTo(x, renderUpToY - renderBarError);
+            ctx.moveTo(x - wiskerWidth, renderUpToY - renderBarError);
+            ctx.lineTo(x + wiskerWidth, renderUpToY - renderBarError);
+            ctx.stroke();
+          }
+        }
       }
       ctx.restore();
     };
