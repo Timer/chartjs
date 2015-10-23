@@ -249,6 +249,11 @@ Math.log10 = Math.log10 || function(x) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
         if (options.scaleStyle == 'log2' && ticks[index] !== 0) ticks[index] = Math.round(Math.pow(2, ticks[index]));
         ctx.fillText(ticks[index] + '', leftXPadding - options.padding_ticks, topYPadding + remainingHeight - tickHeight);
+        if (index == 0) continue;
+        ctx.beginPath();
+        ctx.moveTo(leftXPadding, topYPadding + remainingHeight - tickHeight);
+        ctx.lineTo(leftXPadding + remainingWidth, topYPadding + remainingHeight - tickHeight);
+        ctx.stroke();
       }
       ctx.restore();
 
