@@ -234,6 +234,8 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw y-axis labels */
       ctx.save();
+      ctx.fillStyle = 'rgb(0, 0, 0)';
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
       ctx.font = options.fontSize_ticks + 'px ' + options.font;
       ctx.textAlign = 'right';
       var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * (1 + options.tickPaddingPercent))));
