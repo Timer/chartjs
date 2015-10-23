@@ -245,7 +245,7 @@ Math.log10 = Math.log10 || function(x) {
       }
       for (index = 0; index < ticks.length; ++index) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
-        if (options.scaleStyle == 'log2') ticks[index] = Math.round(Math.pow(2, ticks[index]));
+        if (options.scaleStyle == 'log2' && ticks[index] !== 0) ticks[index] = Math.round(Math.pow(2, ticks[index]));
         ctx.fillText(ticks[index] + '', leftXPadding - options.padding_ticks, topYPadding + remainingHeight - tickHeight);
       }
       ctx.restore();
