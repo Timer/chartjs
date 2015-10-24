@@ -115,6 +115,11 @@ Math.log10 = Math.log10 || function(x) {
       content._data_standard_error = [];
       for (var i = 0; i < content.data.length; ++i) {
         var isArr = Array.isArray(content.data[i]);
+        if (this.options.scaleStyle === 'log2') {
+          if (isArr) {
+            for (var i3 = 0; i3 < content.data[i].length; ++i3) content.data[i][i3] = Math.log2(content.data[i][i3]);
+          } else content.data[i] = Math.log2(content.data[i]);
+        }
         if (isArr) {
           var mean = Helpers.avg(content.data[i]);
           var acc = 0;
@@ -125,11 +130,6 @@ Math.log10 = Math.log10 || function(x) {
         } else {
           content._data_standard_deviation.push(0);
           content._data_standard_error.push(0);
-        }
-        if (this.options.scaleStyle === 'log2') {
-          if (isArr) {
-            for (var i3 = 0; i3 < content.data[i].length; ++i3) content.data[i][i3] = Math.log2(content.data[i][i3]);
-          } else content.data[i] = Math.log2(content.data[i]);
         }
       }
       this.content = content;
