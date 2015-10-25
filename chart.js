@@ -274,9 +274,15 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
-      ctx.strokeStyle = options.strokeColor_bar;
-      ctx.fillStyle = options.fillColor_bar;
       for (index = 0; index < content.data.length; ++index) {
+        if (content.fillColor != null) {
+          if (Array.isArray(content.fillColor)) ctx.fillStyle = content.fillColor[index];
+          else ctx.fillStyle = content.fillColor;
+        } else ctx.fillStyle = options.fillColor_bar;
+        if (content.strokeColor != null) {
+          if (Array.isArray(content.strokeColor)) ctx.fillStyle = content.strokeColor[index];
+          else ctx.fillStyle = content.strokeColor;
+        } else ctx.strokeStyle = options.strokeColor_bar;
         var v = content.data[index];
         if (Array.isArray(v)) v = Helpers.avg(v);
         var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
