@@ -78,20 +78,20 @@ Math.log10 = Math.log10 || function(x) {
     function BarChart(ctx, options) {
       this.options = {
         font: 'Helvetica',
-        fontSize_title: 24,
-        fontSize_axis: 20,
-        fontSize_ticks: 18,
-        fontSize_labels: 18,
-        barPaddingPercent: 0.10,
-        tickPaddingPercent: 0.10,
-        padding_vertical: 10,
-        padding_horizontal: 10,
-        padding_ticks: 10,
-        fillColor_background: 'rgb(220, 220, 220)',
-        strokeColor_bar: 'rgb(0, 0, 0)',
-        fillColor_bar: 'rgb(180, 180, 180)',
+        fontSizeTitle: 24,
+        fontSizeAxes: 20,
+        fontSizeTicks: 18,
+        fontSizeLabels: 18,
+        paddingPercentBars: 0.10,
+        paddingPercentTicks: 0.10,
+        paddingPixelsVertical: 10,
+        paddingPixelsHorizontal: 10,
+        paddingPixelsTicks: 10,
+        fillColorBackground: 'rgb(220, 220, 220)',
+        strokeColorBars: 'rgb(0, 0, 0)',
+        fillColorBars: 'rgb(180, 180, 180)',
         scaleStyle: 'linear',
-        errorBars: 'none'
+        errorBarStyle: 'none'
       };
       options = options || { };
       for (var key in this.options) {
@@ -150,79 +150,79 @@ Math.log10 = Math.log10 || function(x) {
       var remainingWidth = width, remainingHeight = height;
       var index;
 
-      if (options.fillColor_background != null) {
+      if (options.fillColorBackground != null) {
         ctx.save();
-        ctx.fillStyle = options.fillColor_background;
+        ctx.fillStyle = options.fillColorBackground;
         ctx.fillRect(0, 0, width, height);
         ctx.restore();
       }
 
-      var topYPadding = options.padding_horizontal;
-      remainingHeight -= options.padding_horizontal;
+      var topYPadding = options.paddingPixelsHorizontal;
+      remainingHeight -= options.paddingPixelsHorizontal;
       ctx.fillStyle = 'rgb(0, 0, 0)';
       /* Draw title of bar chart */
       if (content.title != null) {
         ctx.save();
-        ctx.font = options.fontSize_title + 'px ' + options.font;
+        ctx.font = options.fontSizeTitle + 'px ' + options.font;
         ctx.textAlign = 'center';
-        ctx.fillText(content.title, width / 2, topYPadding + options.fontSize_title);
+        ctx.fillText(content.title, width / 2, topYPadding + options.fontSizeTitle);
         ctx.restore();
-        remainingHeight -= options.fontSize_title * 1.25;
-        topYPadding += options.fontSize_title * 1.25;
+        remainingHeight -= options.fontSizeTitle * 1.25;
+        topYPadding += options.fontSizeTitle * 1.25;
       }
 
       /* Compute required left padding */
-      var leftXPadding = options.padding_vertical;
-      remainingWidth  -= options.padding_vertical;
+      var leftXPadding = options.paddingPixelsVertical;
+      remainingWidth  -= options.paddingPixelsVertical;
 
       var leftXDrawYLabel = null;
       if (content.yAxis != null) {
-        leftXDrawYLabel = leftXPadding + options.fontSize_axis * 0.5;
-        remainingWidth -= options.fontSize_axis * 1.25;
-        leftXPadding += options.fontSize_axis * 1.25;
+        leftXDrawYLabel = leftXPadding + options.fontSizeAxes * 0.5;
+        remainingWidth -= options.fontSizeAxes * 1.25;
+        leftXPadding += options.fontSizeAxes * 1.25;
       }
 
       ctx.save();
-      ctx.font = options.fontSize_ticks + 'px ' + options.font;
+      ctx.font = options.fontSizeTicks + 'px ' + options.font;
       var maxChartValue = Helpers.upperMax(content.data);
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : maxChartValue;
       maxYAxisTickWidth = ctx.measureText(Math.max(maxYAxisTickWidth, 100)).width;
-      maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.padding_ticks;
+      maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
       ctx.restore();
 
-      var rightXPadding = options.padding_vertical;
-      remainingWidth -= options.padding_vertical;
+      var rightXPadding = options.paddingPixelsVertical;
+      remainingWidth -= options.paddingPixelsVertical;
 
       /* Draw x-axis label of bar chart */
-      var bottomYPadding = options.padding_horizontal;
-      remainingHeight -= options.padding_horizontal;
+      var bottomYPadding = options.paddingPixelsHorizontal;
+      remainingHeight -= options.paddingPixelsHorizontal;
       if (content.xAxis != null) {
         ctx.save();
-        ctx.font = options.fontSize_axis + 'px ' + options.font;
+        ctx.font = options.fontSizeAxes + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
         ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - bottomYPadding);
-        remainingHeight -= options.fontSize_axis;
-        bottomYPadding += options.fontSize_axis;
+        remainingHeight -= options.fontSizeAxes;
+        bottomYPadding += options.fontSizeAxes;
         ctx.restore();
       }
 
       /* Draw x-axis labels */
       ctx.save();
       ctx.textAlign = 'center';
-      ctx.font = options.fontSize_labels + 'px ' + options.font;
+      ctx.font = options.fontSizeLabels + 'px ' + options.font;
       var widthPerBar = remainingWidth / content.data.length;
-      var computedBarPadding = Math.floor((widthPerBar * options.barPaddingPercent) / 2);
+      var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
       for (index = 0; index < content.labels.length; ++index) {
         ctx.fillText(
           content.labels[index],
           leftXPadding + index * widthPerBar + widthPerBar / 2,
-          height - options.fontSize_labels / 2 - bottomYPadding
+          height - options.fontSizeLabels / 2 - bottomYPadding
         );
       }
-      remainingHeight -= options.fontSize_labels * 1.5;
+      remainingHeight -= options.fontSizeLabels * 1.5;
       ctx.restore();
 
       /* Draw boundaries */
@@ -240,7 +240,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.save();
         ctx.translate(0, 0);
         ctx.rotate(Math.PI * 1.5);
-        ctx.font = options.fontSize_axis + 'px ' + options.font;
+        ctx.font = options.fontSizeAxes + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
         ctx.fillText(content.yAxis, -(topYPadding + remainingHeight / 2), leftXDrawYLabel);
@@ -251,10 +251,10 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.fillStyle = 'rgb(0, 0, 0)';
       ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
-      ctx.font = options.fontSize_ticks + 'px ' + options.font;
+      ctx.font = options.fontSizeTicks + 'px ' + options.font;
       ctx.textAlign = 'right';
-      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSize_ticks * (1 + options.tickPaddingPercent))));
-      maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSize_ticks);
+      var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSizeTicks * (1 + options.paddingPercentTicks))));
+      maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSizeTicks);
       var ticks = [];
       while (tickMeta[0] <= tickMeta[1]) {
         ticks.push(tickMeta[0]);
@@ -264,7 +264,7 @@ Math.log10 = Math.log10 || function(x) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
         if (options.scaleStyle == 'log2' && ticks[index] !== 0) ticks[index] = Math.round(Math.pow(2, ticks[index]));
         else ticks[index] = Math.floor(ticks[index] * 100) / 100;
-        ctx.fillText(ticks[index] + '', leftXPadding - options.padding_ticks, topYPadding + remainingHeight - tickHeight);
+        ctx.fillText(ticks[index] + '', leftXPadding - options.paddingPixelsTicks, topYPadding + remainingHeight - tickHeight);
         if (index == 0) continue;
         ctx.beginPath();
         ctx.moveTo(leftXPadding, topYPadding + remainingHeight - tickHeight);
@@ -279,11 +279,11 @@ Math.log10 = Math.log10 || function(x) {
         if (content.fillColor != null) {
           if (Array.isArray(content.fillColor)) ctx.fillStyle = content.fillColor[index];
           else ctx.fillStyle = content.fillColor;
-        } else ctx.fillStyle = options.fillColor_bar;
+        } else ctx.fillStyle = options.fillColorBars;
         if (content.strokeColor != null) {
           if (Array.isArray(content.strokeColor)) ctx.fillStyle = content.strokeColor[index];
           else ctx.fillStyle = content.strokeColor;
-        } else ctx.strokeStyle = options.strokeColor_bar;
+        } else ctx.strokeStyle = options.strokeColorBars;
         var v = content.data[index];
         if (Array.isArray(v)) v = Helpers.avg(v);
         var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
@@ -297,7 +297,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.stroke();
         ctx.fill();
 
-        if (options.errorBars === 'error') {
+        if (options.errorBarStyle === 'error') {
           var val;
           if ((val = content._data_standard_error[index]) != 0) {
             var renderBarError = Math.round(remainingHeight * (val / maxChartValue));
