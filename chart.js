@@ -308,6 +308,7 @@ Math.log10 = Math.log10 || function(x) {
         }
       }
       ctx.restore();
+      ctx.translate(0.5, 0.5);
     };
 
     return BarChart;
