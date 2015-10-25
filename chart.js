@@ -83,13 +83,13 @@ Math.log10 = Math.log10 || function(x) {
         fontSizeTicks: 18,
         fontSizeLabels: 18,
         paddingPercentBars: 0.10,
-        paddingPercentTicks: 0.10,
+        paddingPercentTicks: 0.15,
         paddingPixelsVertical: 10,
         paddingPixelsHorizontal: 10,
         paddingPixelsTicks: 10,
-        fillColorBackground: 'rgb(220, 220, 220)',
+        fillColorBackground: 'rgb(255, 255, 255)',
         strokeColorBars: 'rgb(0, 0, 0)',
-        fillColorBars: 'rgb(180, 180, 180)',
+        fillColorBars: 'rgba(180, 180, 180, 0.25)',
         scaleStyle: 'linear',
         errorBarStyle: 'none'
       };
