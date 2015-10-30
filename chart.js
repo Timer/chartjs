@@ -209,11 +209,12 @@ Math.log10 = Math.log10 || function(x) {
         ctx.restore();
       }
 
+      var widthPerBar = remainingWidth / content.data.length;
+
       /* Draw x-axis labels */
       ctx.save();
       ctx.textAlign = 'center';
       ctx.font = options.fontSizeLabels + 'px ' + options.font;
-      var widthPerBar = remainingWidth / content.data.length;
       var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
       for (index = 0; index < content.labels.length; ++index) {
         ctx.fillText(
@@ -223,6 +224,7 @@ Math.log10 = Math.log10 || function(x) {
         );
       }
       remainingHeight -= options.fontSizeLabels * 1.5;
+      bottomYPadding += options.fontSizeLabels * 1.5;
       ctx.restore();
 
       /* Draw boundaries */
