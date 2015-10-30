@@ -91,7 +91,8 @@ Math.log10 = Math.log10 || function(x) {
         strokeColorBars: 'rgb(0, 0, 0)',
         fillColorBars: 'rgba(180, 180, 180, 0.25)',
         scaleStyle: 'linear',
-        errorBarStyle: 'none'
+        errorBarStyle: 'none',
+        defaultMaxTick: 0
       };
       options = options || { };
       for (var key in this.options) {
@@ -185,6 +186,7 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSizeTicks + 'px ' + options.font;
       var maxChartValue = Helpers.upperMax(content.data);
+      if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : maxChartValue;
       maxYAxisTickWidth = ctx.measureText(Math.max(maxYAxisTickWidth, 100)).width;
       maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
@@ -257,7 +259,6 @@ Math.log10 = Math.log10 || function(x) {
       /* Draw y-axis label of bar chart */
       if (content.yAxis != null) {
         ctx.save();
-        ctx.translate(0, 0);
         ctx.rotate(Math.PI * 1.5);
         ctx.font = options.fontSizeAxes + 'px ' + options.font;
         ctx.fillStyle = 'rgb(0, 0, 0)';
