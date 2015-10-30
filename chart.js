@@ -211,6 +211,23 @@ Math.log10 = Math.log10 || function(x) {
 
       var widthPerBar = remainingWidth / content.data.length;
 
+      /* Draw x-axis top labels */
+      if (content.topLabels != null) {
+        ctx.save();
+        ctx.textAlign = 'center';
+        ctx.font = options.fontSizeLabels + 'px ' + options.font;
+        remainingHeight -= options.fontSizeLabels * 1.5;
+        topYPadding += options.fontSizeLabels * 1.5;
+        for (index = 0; index < content.topLabels.length; ++index) {
+          ctx.fillText(
+            content.topLabels[index],
+            leftXPadding + index * widthPerBar + widthPerBar / 2,
+            topYPadding - options.fontSizeLabels / 2
+          );
+        }
+        ctx.restore();
+      }
+
       /* Draw x-axis labels */
       ctx.save();
       ctx.textAlign = 'center';
