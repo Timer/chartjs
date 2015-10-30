@@ -250,9 +250,15 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.strokeStyle = 'rgb(0, 0, 0)';
       ctx.beginPath();
-      ctx.moveTo(leftXPadding, topYPadding);
+      if (content.topLabels != null) {
+        ctx.moveTo(leftXPadding + remainingWidth, topYPadding);
+        ctx.lineTo(leftXPadding, topYPadding);
+      } else {
+        ctx.moveTo(leftXPadding, topYPadding);
+      }
       ctx.lineTo(leftXPadding, topYPadding + remainingHeight);
       ctx.lineTo(leftXPadding + remainingWidth, topYPadding + remainingHeight);
+      if (content.topLabels != null) ctx.lineTo(leftXPadding + remainingWidth, topYPadding);
       ctx.stroke();
       ctx.restore();
 
