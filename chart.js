@@ -232,18 +232,35 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw x-axis labels */
       ctx.save();
-      ctx.textAlign = 'center';
       ctx.font = options.fontSizeLabels + 'px ' + options.font;
       var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
+      var maxTextWidth = 0;
       for (index = 0; index < content.labels.length; ++index) {
-        ctx.fillText(
-          content.labels[index],
-          leftXPadding + index * widthPerBar + widthPerBar / 2,
-          height - options.fontSizeLabels / 2 - bottomYPadding
-        );
+        maxTextWidth = Math.max(maxTextWidth, ctx.measureText(content.labels[index]).width);
       }
-      remainingHeight -= options.fontSizeLabels * 1.5;
-      bottomYPadding += options.fontSizeLabels * 1.5;
+      var xLabelsRotated = false;
+      if (maxTextWidth > widthPerBar - computedBarPadding) {
+        ctx.textAlign = 'right';
+        ctx.rotate(Math.PI * 1.5);
+        xLabelsRotated = true;
+      } else {
+        ctx.textAlign = 'center';
+      }
+      for (index = 0; index < content.labels.length; ++index) {
+        var x = leftXPadding + index * widthPerBar + widthPerBar / 2, y = height - options.fontSizeLabels / 2 - bottomYPadding;
+        if (xLabelsRotated) {
+          y = topYPadding + remainingHeight - maxTextWidth + 5;
+          y = [x, x = -y][0];
+        }
+        ctx.fillText(content.labels[index], x, y);
+      }
+      if (xLabelsRotated) {
+        remainingHeight -= maxTextWidth + 5;
+        bottomYPadding += maxTextWidth + 5;
+      } else {
+        remainingHeight -= options.fontSizeLabels * 1.5;
+        bottomYPadding += options.fontSizeLabels * 1.5;
+      }
       ctx.restore();
 
       /* Draw boundaries */
