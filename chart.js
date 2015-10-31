@@ -341,6 +341,8 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
+      ctx.font = options.fontSizeLabels + 'px ' + options.font;
+      ctx.textAlign = 'center';
       for (index = 0; index < content.data.length; ++index) {
         if (content.fillColor != null) {
           if (Array.isArray(content.fillColor)) ctx.fillStyle = content.fillColor[index];
@@ -378,6 +380,11 @@ Math.log10 = Math.log10 || function(x) {
             ctx.lineTo(x + wiskerWidth, renderUpToY - renderBarError);
             ctx.stroke();
           }
+        }
+
+        if (content.barTooltips != null) {
+          ctx.fillStyle = 'rgb(0, 0, 0)';
+          ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
         }
       }
       ctx.restore();
