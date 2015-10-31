@@ -234,9 +234,15 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.font = options.fontSizeLabels + 'px ' + options.font;
       var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
-      var maxTextWidth = 0;
+      var maxTextWidth = 0, maxTextStackSize = 1;
       for (index = 0; index < content.labels.length; ++index) {
-        maxTextWidth = Math.max(maxTextWidth, ctx.measureText(content.labels[index]).width);
+        var tLabel = content.labels[index];
+        if (Array.isArray(tLabel)) {
+          maxTextStackSize = Math.max(maxTextStackSize, tLabel.length);
+          for (var index2 = 0; index2 < tLabel.length; ++index2) {
+            maxTextWidth = Math.max(maxTextWidth, ctx.measureText(tLabel[index2]).width);
+          }
+        } else maxTextWidth = Math.max(maxTextWidth, ctx.measureText(tLabel).width);
       }
       var xLabelsRotated = false;
       if (maxTextWidth > widthPerBar - computedBarPadding) {
@@ -247,19 +253,36 @@ Math.log10 = Math.log10 || function(x) {
         ctx.textAlign = 'center';
       }
       for (index = 0; index < content.labels.length; ++index) {
+        var cLabel = content.labels[index];
         var x = leftXPadding + index * widthPerBar + widthPerBar / 2, y = height - options.fontSizeLabels / 2 - bottomYPadding;
         if (xLabelsRotated) {
           y = topYPadding + remainingHeight - maxTextWidth + 5;
           y = [x, x = -y][0];
         }
-        ctx.fillText(content.labels[index], x, y);
+        var yUp = options.fontSizeLabels * (maxTextStackSize - 1);
+        if (Array.isArray(cLabel)) {
+          var yUp;
+          if (xLabelsRotated) {
+            yUp = options.fontSizeLabels * (cLabel.length - 1.5);
+            yUp /= 2;
+          }
+          for (var index2 = 0; index2 < cLabel.length; ++index2) {
+            ctx.fillText(cLabel[index2], x, y - yUp);
+            yUp -= options.fontSizeLabels;
+          }
+        } else {
+          if (xLabelsRotated) yUp = -options.fontSizeLabels * 0.25;
+          ctx.fillText(cLabel, x, y - yUp);
+        }
       }
       if (xLabelsRotated) {
         remainingHeight -= maxTextWidth + 5;
         bottomYPadding += maxTextWidth + 5;
       } else {
-        remainingHeight -= options.fontSizeLabels * 1.5;
-        bottomYPadding += options.fontSizeLabels * 1.5;
+        var remVal = options.fontSizeLabels * maxTextStackSize;
+        remVal += options.fontSizeLabels * 0.5;
+        remainingHeight -= remVal;
+        bottomYPadding += remVal;
       }
       ctx.restore();
 
