@@ -71,6 +71,14 @@ Math.log10 = Math.log10 || function(x) {
         Math.ceil(max / tickSpacing) * tickSpacing,
         tickSpacing
       ];
+    },
+    getFont: function(options) {
+      options.style = options.style || 'normal';
+      options.variant = options.variant || 'normal';
+      options.weight = options.weight || 'lighter';
+      options.size = options.size || '12';
+      options.family = options.family || 'Arial';
+      return [options.style, options.variant, options.weight, options.size + 'px', options.family].join(' ');
     }
   };
 
@@ -164,7 +172,7 @@ Math.log10 = Math.log10 || function(x) {
       /* Draw title of bar chart */
       if (content.title != null) {
         ctx.save();
-        ctx.font = options.fontSizeTitle + 'px ' + options.font;
+        ctx.font = Helpers.getFont({ size: options.fontSizeTitle, family: options.font });
         ctx.textAlign = 'center';
         ctx.fillText(content.title, width / 2, topYPadding + options.fontSizeTitle);
         ctx.restore();
@@ -184,7 +192,7 @@ Math.log10 = Math.log10 || function(x) {
       }
 
       ctx.save();
-      ctx.font = options.fontSizeTicks + 'px ' + options.font;
+      ctx.font = Helpers.getFont({ size: options.fontSizeTicks, family: options.font });
       var maxChartValue = Helpers.upperMax(content.data);
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : maxChartValue;
@@ -202,7 +210,7 @@ Math.log10 = Math.log10 || function(x) {
       remainingHeight -= options.paddingPixelsHorizontal;
       if (content.xAxis != null) {
         ctx.save();
-        ctx.font = options.fontSizeAxes + 'px ' + options.font;
+        ctx.font = Helpers.getFont({ size: options.fontSizeAxes, family: options.font });
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
         ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - bottomYPadding);
@@ -217,7 +225,7 @@ Math.log10 = Math.log10 || function(x) {
       if (content.topLabels != null) {
         ctx.save();
         ctx.textAlign = 'center';
-        ctx.font = options.fontSizeLabels + 'px ' + options.font;
+        ctx.font = Helpers.getFont({ size: options.fontSizeLabels, family: options.font });
         remainingHeight -= options.fontSizeLabels * 1.5;
         topYPadding += options.fontSizeLabels * 1.5;
         for (index = 0; index < content.topLabels.length; ++index) {
@@ -232,7 +240,7 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw x-axis labels */
       ctx.save();
-      ctx.font = options.fontSizeLabels + 'px ' + options.font;
+      ctx.font = Helpers.getFont({ size: options.fontSizeLabels, family: options.font });
       var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
       var maxTextWidth = 0, maxTextStackSize = 1;
       for (index = 0; index < content.labels.length; ++index) {
@@ -306,7 +314,7 @@ Math.log10 = Math.log10 || function(x) {
       if (content.yAxis != null) {
         ctx.save();
         ctx.rotate(Math.PI * 1.5);
-        ctx.font = options.fontSizeAxes + 'px ' + options.font;
+        ctx.font = Helpers.getFont({ size: options.fontSizeAxes, family: options.font });
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
         ctx.fillText(content.yAxis, -(topYPadding + remainingHeight / 2), leftXDrawYLabel);
@@ -317,7 +325,7 @@ Math.log10 = Math.log10 || function(x) {
       ctx.save();
       ctx.fillStyle = 'rgb(0, 0, 0)';
       ctx.strokeStyle = 'rgba(0, 0, 0, 0.20)';
-      ctx.font = options.fontSizeTicks + 'px ' + options.font;
+      ctx.font = Helpers.getFont({ size: options.fontSizeTicks, family: options.font });
       ctx.textAlign = 'right';
       var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSizeTicks * (1 + options.paddingPercentTicks))));
       maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSizeTicks);
@@ -341,7 +349,7 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
-      ctx.font = options.fontSizeLabels + 'px ' + options.font;
+      ctx.font = Helpers.getFont({ size: options.fontSizeLabels, family: options.font });
       ctx.textAlign = 'center';
       for (index = 0; index < content.data.length; ++index) {
         if (content.fillColor != null) {
