@@ -196,8 +196,8 @@ Math.log10 = Math.log10 || function(x) {
       ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeTicks, family: options.font });
       var maxChartValue = Helpers.upperMax(content.data);
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
-      var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : maxChartValue;
-      maxYAxisTickWidth = ctx.measureText(Math.max(maxYAxisTickWidth, 100)).width;
+      var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
+      maxYAxisTickWidth = ctx.measureText(maxYAxisTickWidth).width;
       maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
       remainingWidth -= maxYAxisTickWidth;
       leftXPadding += maxYAxisTickWidth;
