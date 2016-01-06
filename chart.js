@@ -311,6 +311,15 @@ Math.log10 = Math.log10 || function(x) {
       ctx.stroke();
       ctx.restore();
 
+      /* Draw top label */
+      if (content.topLabel != null) {
+        ctx.save();
+        ctx.textAlign = 'right';
+        ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
+        ctx.fillText(content.topLabel, leftXPadding - 3, topYPadding - options.fontSizeLabels / 2);
+        ctx.restore();
+      }
+
       /* Draw y-axis label of bar chart */
       if (content.yAxis != null) {
         ctx.save();
