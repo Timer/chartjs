@@ -383,11 +383,39 @@ Math.log10 = Math.log10 || function(x) {
         } else ctx.strokeStyle = options.strokeColorBars;
         var v = content.data[index];
         var vIsArr = Array.isArray(v);
+        var renderStartX = leftXPadding + widthPerBar * index;
         if (vIsArr && options.barStyle === 'stacked') {
+          var runningValue = 0, lastHeight = 0;
+          for (var drawIndex = 0; drawIndex < v.length; ++drawIndex) {
+            runningValue += v[drawIndex];
+            var renderBarHeight = Math.floor(remainingHeight * (runningValue / maxChartValue));
+            var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
+            if (Math.abs(renderBarHeight - lastHeight) < 5) {
+              lastHeight = renderBarHeight;
+              continue;
+            }
+
+            var barPadP = drawIndex > 0 ? 3 : 0;
+            var tSX, tSY;
+            ctx.beginPath();
+            ctx.moveTo(tSX = renderStartX + computedBarPadding, tSY = topYPadding + remainingHeight - lastHeight - barPadP);
+            ctx.lineTo(renderStartX + computedBarPadding, renderUpToY);
+            ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, renderUpToY);
+            ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight - lastHeight - barPadP);
+            if (drawIndex > 0) ctx.lineTo(tSX, tSY);
+            ctx.stroke();
+            ctx.fill();
+
+            lastHeight = renderBarHeight;
+          }
+
+          if (content.barTooltips != null) {
+            ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
+          }
         } else {
           if (vIsArr) v = Helpers.avg(v);
           var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
-          var renderStartX = leftXPadding + widthPerBar * index;
           var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
           ctx.beginPath();
           ctx.moveTo(renderStartX + computedBarPadding, topYPadding + remainingHeight);
