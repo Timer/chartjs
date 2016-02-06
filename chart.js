@@ -91,6 +91,7 @@ Math.log10 = Math.log10 || function(x) {
         fontSizeAxes: 20,
         fontSizeTicks: 18,
         fontSizeLabels: 18,
+        fontDataTags: 18,
         paddingPercentBars: 0.10,
         paddingPercentTicks: 0.15,
         paddingPixelsVertical: 10,
