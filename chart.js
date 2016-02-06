@@ -92,6 +92,7 @@ Math.log10 = Math.log10 || function(x) {
         fontSizeTicks: 18,
         fontSizeLabels: 18,
         fontDataTags: 18,
+        fontSizeLegend: 18,
         paddingPercentBars: 0.10,
         paddingPercentTicks: 0.15,
         paddingPixelsVertical: 10,
@@ -103,7 +104,9 @@ Math.log10 = Math.log10 || function(x) {
         scaleStyle: 'linear',
         barStyle: 'none',
         stackedBarPadding: 3,
-        defaultMaxTick: 0
+        defaultMaxTick: 0,
+        pixelsLegendSquare: 10,
+        fillColorLegend: 'rgb(230, 230, 230)'
       };
       options = options || { };
       for (var key in this.options) {
@@ -181,6 +184,55 @@ Math.log10 = Math.log10 || function(x) {
         ctx.restore();
         remainingHeight -= options.fontSizeTitle * 1.25;
         topYPadding += options.fontSizeTitle * 1.25;
+      }
+
+      /* Draw legend */
+      if (content.legend != null && Array.isArray(content.legend)) {
+        ctx.save();
+        ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLegend, family: options.font });
+        var maxLWidth = 0;
+        for (var lIndex = 0; lIndex < content.legend.length; ++lIndex) {
+          maxLWidth = Math.max(maxLWidth, ctx.measureText(content.legend[lIndex].label).width);
+        }
+        maxLWidth = Math.ceil(maxLWidth);
+        maxLWidth += options.pixelsLegendSquare + 8;
+        var legendEntriesPerLine = Math.floor((width - options.paddingPixelsHorizontal * 2) / maxLWidth);
+        var lLReqHeight = Math.ceil(content.legend.length / legendEntriesPerLine) * options.fontSizeLegend * 1.5;
+        remainingHeight -= lLReqHeight;
+        bottomYPadding += lLReqHeight;
+
+        ctx.strokeStyle = 'rgb(0, 0, 0)';
+        ctx.fillStyle = options.fillColorLegend;
+        var bSX, bSY;
+        ctx.beginPath();
+        ctx.moveTo(bSX = options.paddingPixelsHorizontal, bSY = topYPadding + remainingHeight);
+        ctx.lineTo(width - bSX, bSY);
+        ctx.lineTo(width - bSX, bSY + lLReqHeight);
+        ctx.lineTo(bSX, bSY + lLReqHeight);
+        ctx.lineTo(bSX, bSY);
+        ctx.stroke();
+        ctx.fill();
+
+        for (var lIndex = 0; lIndex < content.legend.length; ++lIndex) {
+          var legLine = Math.floor(lIndex / legendEntriesPerLine);
+          var legCol = lIndex % legendEntriesPerLine;
+          ctx.fillStyle = content.legend[lIndex].color;
+          var boxX = bSX + legCol * maxLWidth + 3, boxY = bSY + legLine * options.fontSizeLegend * 1.5 + options.fontSizeLegend * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(boxX, boxY);
+          ctx.lineTo(boxX + options.pixelsLegendSquare, boxY);
+          ctx.lineTo(boxX + options.pixelsLegendSquare, boxY + options.pixelsLegendSquare);
+          ctx.lineTo(boxX, boxY + options.pixelsLegendSquare);
+          ctx.lineTo(boxX, boxY);
+          ctx.fill();
+          ctx.stroke();
+
+          ctx.textAlign = 'left';
+          ctx.fillStyle = 'rgb(0, 0, 0)';
+          ctx.fillText(content.legend[lIndex].label, boxX + 3 + options.pixelsLegendSquare, boxY + options.fontSizeLegend * 0.5);
+        }
+
+        ctx.restore();
       }
 
       /* Compute required left padding */
