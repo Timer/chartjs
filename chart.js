@@ -406,6 +406,16 @@ Math.log10 = Math.log10 || function(x) {
             ctx.stroke();
             ctx.fill();
 
+            var tagText;
+            if (tSY - renderUpToY > options.fontDataTags * 1.25 && content.dataTags != null && (tagText = content.dataTags[index]) !== null && (tagText = tagText[drawIndex]) !== null) {
+              var oFS = ctx.fillStyle;
+              ctx.fillStyle = 'rgb(0, 0, 0)';
+              ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontDataTags, family: options.font });
+              ctx.textAlign = 'center';
+              ctx.fillText(tagText, renderStartX + widthPerBar / 2, tSY - options.fontDataTags * 0.25);
+              ctx.fillStyle = oFS;
+            }
+
             lastHeight = renderBarHeight;
           }
 
