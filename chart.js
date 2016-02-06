@@ -373,12 +373,14 @@ Math.log10 = Math.log10 || function(x) {
       /* Draw bars */
       ctx.save();
       for (index = 0; index < content.data.length; ++index) {
+        var fillColorForIndex = null;
+        var strokeColorForIndex = null;
         if (content.fillColor != null) {
-          if (Array.isArray(content.fillColor)) ctx.fillStyle = content.fillColor[index];
+          if (Array.isArray(content.fillColor)) fillColorForIndex = ctx.fillStyle = content.fillColor[index];
           else ctx.fillStyle = content.fillColor;
         } else ctx.fillStyle = options.fillColorBars;
         if (content.strokeColor != null) {
-          if (Array.isArray(content.strokeColor)) ctx.fillStyle = content.strokeColor[index];
+          if (Array.isArray(content.strokeColor)) strokeColorForIndex = ctx.fillStyle = content.strokeColor[index];
           else ctx.fillStyle = content.strokeColor;
         } else ctx.strokeStyle = options.strokeColorBars;
         var v = content.data[index];
@@ -387,6 +389,13 @@ Math.log10 = Math.log10 || function(x) {
         if (vIsArr && options.barStyle === 'stacked') {
           var runningValue = 0, lastHeight = 0;
           for (var drawIndex = 0; drawIndex < v.length; ++drawIndex) {
+            if (fillColorForIndex != null && Array.isArray(fillColorForIndex)) {
+              ctx.fillStyle = fillColorForIndex[drawIndex] || options.fillColorBars;
+            }
+            if (strokeColorForIndex != null && Array.isArray(strokeColorForIndex)) {
+              ctx.strokeStyle = strokeColorForIndex[drawIndex] || options.strokeColorBars;
+            }
+
             runningValue += v[drawIndex];
             var renderBarHeight = Math.floor(remainingHeight * (runningValue / maxChartValue));
             var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
