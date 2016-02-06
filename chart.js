@@ -372,8 +372,6 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
-      ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
-      ctx.textAlign = 'center';
       for (index = 0; index < content.data.length; ++index) {
         if (content.fillColor != null) {
           if (Array.isArray(content.fillColor)) ctx.fillStyle = content.fillColor[index];
@@ -413,6 +411,8 @@ Math.log10 = Math.log10 || function(x) {
 
           if (content.barTooltips != null) {
             ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
+            ctx.textAlign = 'center';
             ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
           }
         } else {
@@ -446,6 +446,8 @@ Math.log10 = Math.log10 || function(x) {
 
           if (content.barTooltips != null) {
             ctx.fillStyle = 'rgb(0, 0, 0)';
+            ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
+            ctx.textAlign = 'center';
             ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
           }
         }
