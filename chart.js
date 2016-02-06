@@ -101,6 +101,7 @@ Math.log10 = Math.log10 || function(x) {
         fillColorBars: 'rgba(180, 180, 180, 0.25)',
         scaleStyle: 'linear',
         barStyle: 'none',
+        stackedBarPadding: 3,
         defaultMaxTick: 0
       };
       options = options || { };
@@ -390,12 +391,12 @@ Math.log10 = Math.log10 || function(x) {
             runningValue += v[drawIndex];
             var renderBarHeight = Math.floor(remainingHeight * (runningValue / maxChartValue));
             var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
-            if (Math.abs(renderBarHeight - lastHeight) < 5) {
+            if (Math.abs(renderBarHeight - lastHeight) < options.stackedBarPadding + 2) {
               lastHeight = renderBarHeight;
               continue;
             }
 
-            var barPadP = drawIndex > 0 ? 3 : 0;
+            var barPadP = drawIndex > 0 ? options.stackedBarPadding : 0;
             var tSX, tSY;
             ctx.beginPath();
             ctx.moveTo(tSX = renderStartX + computedBarPadding, tSY = topYPadding + remainingHeight - lastHeight - barPadP);
