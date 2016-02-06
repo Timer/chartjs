@@ -227,7 +227,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeAxes, family: options.font });
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
-        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, height - bottomYPadding);
+        ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, topYPadding + remainingHeight - bottomYPadding);
         remainingHeight -= options.fontSizeAxes;
         bottomYPadding += options.fontSizeAxes;
         ctx.restore();
@@ -276,7 +276,7 @@ Math.log10 = Math.log10 || function(x) {
       }
       for (index = 0; index < content.labels.length; ++index) {
         var cLabel = content.labels[index];
-        var x = leftXPadding + index * widthPerBar + widthPerBar / 2, y = height - options.fontSizeLabels / 2 - bottomYPadding;
+        var x = leftXPadding + index * widthPerBar + widthPerBar / 2, y = topYPadding + remainingHeight - options.fontSizeLabels / 2;
         if (xLabelsRotated) {
           y = topYPadding + remainingHeight - maxTextWidth + 5;
           y = [x, x = -y][0];
