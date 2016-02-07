@@ -483,7 +483,7 @@ Math.log10 = Math.log10 || function(x) {
                 var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
                 var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
                 if (x < minX || x > maxX || y < minY || y > maxY) return null;
-                return true;
+                return { index: index, drawIndex: drawIndex, text: hint.split('\n') };
               }.bind(this, hint, tSX, tSY, tEX, tEY));
             }
 
