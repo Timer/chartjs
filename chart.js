@@ -84,6 +84,7 @@ Math.log10 = Math.log10 || function(x) {
 
   var BarChart = (function() {
     function BarChart(ctx, options) {
+      this.mouseListeners = [];
       this.options = {
         font: 'Helvetica',
         fontWeight: 'normal',
@@ -157,7 +158,15 @@ Math.log10 = Math.log10 || function(x) {
       }.bind(this), 0);
     };
 
+    BarChart.prototype.mousemove = function(x, y) {
+      for (var index = 0; index < this.mouseListeners.length; ++index) {
+        if (this.mouseListeners[index](x, y)) break;
+      }
+    };
+
     BarChart.prototype._draw = function() {
+      this.mouseListeners = [];
+
       var options = this.options;
       var ctx = this.ctx, content = this.content;
       var width = ctx.canvas.width, height = ctx.canvas.height;
@@ -459,14 +468,24 @@ Math.log10 = Math.log10 || function(x) {
 
             var barPadP = drawIndex > 0 ? options.stackedBarPadding : 0;
             var tSX, tSY;
+            var tEX, tEY;
             ctx.beginPath();
             ctx.moveTo(tSX = renderStartX + computedBarPadding, tSY = topYPadding + remainingHeight - lastHeight - barPadP);
             ctx.lineTo(renderStartX + computedBarPadding, renderUpToY);
-            ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, renderUpToY);
+            ctx.lineTo(tEX = renderStartX + (widthPerBar - 1) - computedBarPadding, tEY = renderUpToY);
             ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight - lastHeight - barPadP);
             if (drawIndex > 0) ctx.lineTo(tSX, tSY);
             ctx.stroke();
             ctx.fill();
+            var hint;
+            if (content.hints[index] != null && (hint = content.hints[index][drawIndex]) != null) {
+              this.mouseListeners.push(function(hint, sx, sy, ex, ey, x, y) {
+                var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
+                var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
+                if (x < minX || x > maxX || y < minY || y > maxY) return null;
+                return true;
+              }.bind(this, hint, tSX, tSY, tEX, tEY));
+            }
 
             var tagText;
             if (tSY - renderUpToY > options.fontDataTags * 1.25 && content.dataTags != null && (tagText = content.dataTags[index]) !== null && (tagText = tagText[drawIndex]) !== null) {
