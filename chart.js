@@ -95,6 +95,7 @@ Math.log10 = Math.log10 || function(x) {
         fontSizeLabels: 18,
         fontDataTags: 18,
         fontSizeLegend: 18,
+        fontSizeHint: 18,
         paddingPercentBars: 0.10,
         paddingPercentTicks: 0.15,
         paddingPixelsVertical: 10,
@@ -497,7 +498,7 @@ Math.log10 = Math.log10 || function(x) {
                 var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
                 var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
                 if (x < minX || x > maxX || y < minY || y > maxY) return null;
-                return { index: index, drawIndex: drawIndex, text: hint.split('\n') };
+                return { index: index, drawIndex: drawIndex, rect: { left: minX, right: maxX, top: minY, bottom: maxY }, text: hint.split('\n') };
               }.bind(this, index, drawIndex, hint, tSX, tSY, tEX, tEY));
             }
 
