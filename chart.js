@@ -493,12 +493,12 @@ Math.log10 = Math.log10 || function(x) {
             ctx.fill();
             var hint;
             if (content.hints[index] != null && (hint = content.hints[index][drawIndex]) != null) {
-              this.mouseListeners.push(function(hint, sx, sy, ex, ey, x, y) {
+              this.mouseListeners.push(function(index, drawIndex, hint, sx, sy, ex, ey, x, y) {
                 var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
                 var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
                 if (x < minX || x > maxX || y < minY || y > maxY) return null;
                 return { index: index, drawIndex: drawIndex, text: hint.split('\n') };
-              }.bind(this, hint, tSX, tSY, tEX, tEY));
+              }.bind(this, index, drawIndex, hint, tSX, tSY, tEX, tEY));
             }
 
             var tagText;
