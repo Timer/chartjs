@@ -160,8 +160,9 @@ Math.log10 = Math.log10 || function(x) {
     BarChart.prototype._draw = function() {
       var options = this.options;
       var ctx = this.ctx, content = this.content;
-      ctx.translate(-0.5, -0.5);
       var width = ctx.canvas.width, height = ctx.canvas.height;
+      ctx.clearRect(0, 0, width, height);
+      ctx.translate(-0.5, -0.5);
       var remainingWidth = width, remainingHeight = height;
       var index;
 
