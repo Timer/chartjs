@@ -85,6 +85,7 @@ Math.log10 = Math.log10 || function(x) {
   var BarChart = (function() {
     function BarChart(ctx, options) {
       this.mouseListeners = [];
+      this.currentHint = null;
       this.options = {
         font: 'Helvetica',
         fontWeight: 'normal',
@@ -159,8 +160,21 @@ Math.log10 = Math.log10 || function(x) {
     };
 
     BarChart.prototype.mousemove = function(x, y) {
+      var res = null;
       for (var index = 0; index < this.mouseListeners.length; ++index) {
-        if (this.mouseListeners[index](x, y)) break;
+        if ((res = this.mouseListeners[index](x, y))) break;
+      }
+      if (!res || (typeof res) !== 'object' || !res.hasOwnProperty('index') || !res.hasOwnProperty('drawIndex')) {
+        if (this.currentHint !== null) {
+          this.currentHint = null;
+          this.redraw();
+        }
+        return;
+      }
+      var ch = this.currentHint;
+      if (ch == null || ch.index != res.index || ch.drawIndex != res.drawIndex) {
+        this.currentHint = res;
+        this.redraw();
       }
     };
 
