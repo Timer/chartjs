@@ -559,6 +559,31 @@ Math.log10 = Math.log10 || function(x) {
         }
       }
       ctx.restore();
+
+      if (this.currentHint != null) {
+        ctx.save();
+        var hRect = this.currentHint.rect, hints = this.currentHint.text;
+        ctx.fillStyle = 'rgb(0, 0, 0)';
+        ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeHint, family: options.font });
+        ctx.textAlign = 'left';
+        var boxWidth = 0;
+        for (var index = 0; index < hints.length; ++index) {
+          boxWidth = Math.max(boxWidth, Math.ceil(ctx.measureText(hints[index]).width));
+        }
+        var boxWidthPadding = 5;
+        var lineHeight = options.fontSizeHint * 1.5;
+        var boxHeight = hints.length * lineHeight;
+        var drawX = hRect.right + 10, drawY = (hRect.top + hRect.bottom) / 2;
+        boxWidth += boxWidthPadding * 2;
+        ctx.clearRect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
+        ctx.rect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
+        ctx.stroke();
+        for (var index = 0; index < hints.length; ++index) {
+          ctx.fillText(hints[index], drawX + boxWidthPadding, drawY - boxHeight / 2 + options.fontSizeHint + index * lineHeight);
+        }
+        ctx.restore();
+      }
+
       ctx.translate(0.5, 0.5);
     };
 
