@@ -493,7 +493,7 @@ Math.log10 = Math.log10 || function(x) {
             ctx.stroke();
             ctx.fill();
             var hint;
-            if (content.hints[index] != null && (hint = content.hints[index][drawIndex]) != null) {
+            if (content.hints != null && content.hints[index] != null && (hint = content.hints[index][drawIndex]) != null) {
               this.mouseListeners.push(function(index, drawIndex, hint, sx, sy, ex, ey, x, y) {
                 var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
                 var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
