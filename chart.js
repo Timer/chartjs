@@ -331,8 +331,28 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw x-axis labels */
       ctx.save();
+      var reqWidth = 0;
+      if (content.dataTags != null) {
+        ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontDataTags, family: options.font });
+        var dataTags = content.dataTags;
+        for (var index = 0; index < dataTags.length; ++index) {
+          if (Array.isArray(dataTags[index])) {
+            for (var index2 = 0; index2 < dataTags[index].length; ++index2) {
+              reqWidth = Math.max(reqWidth, Math.ceil(ctx.measureText(dataTags[index][index2]).width + 5));
+            }
+          } else {
+            reqWidth = Math.max(reqWidth, Math.ceil(ctx.measureText(dataTags[index]).width + 5));
+          }
+        }
+      }
+
       ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
       var computedBarPadding = Math.floor((widthPerBar * options.paddingPercentBars) / 2);
+      var wwh = widthPerBar - computedBarPadding * 2;
+      if (wwh < reqWidth) {
+        computedBarPadding -= Math.ceil((reqWidth - wwh) / 2);
+        computedBarPadding = Math.max(0, computedBarPadding);
+      }
       var maxTextWidth = 0, maxTextStackSize = 1;
       for (index = 0; index < content.labels.length; ++index) {
         var tLabel = content.labels[index];
