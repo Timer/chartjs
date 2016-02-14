@@ -109,7 +109,9 @@ Math.log10 = Math.log10 || function(x) {
         stackedBarPadding: 3,
         defaultMaxTick: 0,
         pixelsLegendSquare: 10,
-        fillColorLegend: 'rgb(230, 230, 230)'
+        fillColorLegend: 'rgb(230, 230, 230)',
+        tickFormatter: null,
+        tickFormatterMeasure: null
       };
       options = options || { };
       for (var key in this.options) {
@@ -238,6 +240,7 @@ Math.log10 = Math.log10 || function(x) {
       } else maxChartValue = Helpers.upperMax(content.data);
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
+      if (options.tickFormatterMeasure != null) maxYAxisTickWidth = options.tickFormatterMeasure;
       maxYAxisTickWidth = ctx.measureText(maxYAxisTickWidth).width;
       maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
       remainingWidth -= maxYAxisTickWidth;
@@ -458,7 +461,11 @@ Math.log10 = Math.log10 || function(x) {
         var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
         if (options.scaleStyle == 'log2' && ticks[index] !== 0) ticks[index] = Math.round(Math.pow(2, ticks[index]));
         else ticks[index] = Math.floor(ticks[index] * 100) / 100;
-        ctx.fillText(ticks[index] + '', leftXPadding - options.paddingPixelsTicks, topYPadding + remainingHeight - tickHeight);
+        if (options.tickFormatter != null && typeof options.tickFormatter === 'function') {
+          ctx.fillText(options.tickFormatter(ticks[index]).toString(), leftXPadding - options.paddingPixelsTicks, topYPadding + remainingHeight - tickHeight);
+        } else {
+          ctx.fillText(ticks[index].toString(), leftXPadding - options.paddingPixelsTicks, topYPadding + remainingHeight - tickHeight);
+        }
         if (index == 0) continue;
         ctx.beginPath();
         ctx.moveTo(leftXPadding, topYPadding + remainingHeight - tickHeight);
