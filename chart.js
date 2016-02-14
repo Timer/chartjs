@@ -257,7 +257,7 @@ Math.log10 = Math.log10 || function(x) {
         }
         maxLWidth = Math.ceil(maxLWidth);
         maxLWidth += options.pixelsLegendSquare + 8;
-        var legendEntriesPerLine = Math.floor((width - options.paddingPixelsHorizontal * 2) / maxLWidth);
+        var legendEntriesPerLine = Math.floor((remainingWidth - options.paddingPixelsHorizontal * 2) / maxLWidth);
         var lLReqHeight = Math.ceil(content.legend.length / legendEntriesPerLine) * options.fontSizeLegend * 1.5;
         remainingHeight -= lLReqHeight;
         bottomYPadding += lLReqHeight;
@@ -266,9 +266,9 @@ Math.log10 = Math.log10 || function(x) {
         ctx.fillStyle = options.fillColorLegend;
         var bSX, bSY;
         ctx.beginPath();
-        ctx.moveTo(bSX = options.paddingPixelsHorizontal, bSY = topYPadding + remainingHeight);
-        ctx.lineTo(width - bSX, bSY);
-        ctx.lineTo(width - bSX, bSY + lLReqHeight);
+        ctx.moveTo(bSX = leftXPadding, bSY = topYPadding + remainingHeight);
+        ctx.lineTo(bSX + remainingWidth, bSY);
+        ctx.lineTo(bSX + remainingWidth, bSY + lLReqHeight);
         ctx.lineTo(bSX, bSY + lLReqHeight);
         ctx.lineTo(bSX, bSY);
         ctx.stroke();
