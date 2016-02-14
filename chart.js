@@ -211,6 +211,42 @@ Math.log10 = Math.log10 || function(x) {
         topYPadding += options.fontSizeTitle * 1.25;
       }
 
+      /* Compute required left padding */
+      var leftXPadding = options.paddingPixelsVertical;
+      remainingWidth  -= options.paddingPixelsVertical;
+
+      var leftXDrawYLabel = null;
+      if (content.yAxis != null) {
+        leftXDrawYLabel = leftXPadding + options.fontSizeAxes * 0.5;
+        remainingWidth -= options.fontSizeAxes * 1.25;
+        leftXPadding += options.fontSizeAxes * 1.25;
+      }
+
+      ctx.save();
+      ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeTicks, family: options.font });
+      var maxChartValue;
+      if (options.barStyle === 'stacked') {
+        maxChartValue = 0;
+        for (var cmIndex = 0; cmIndex < content.data.length; ++cmIndex) {
+          var doB;
+          if (Array.isArray(doB = content.data[cmIndex])) {
+            var tempSum = 0;
+            for (var ii2 = 0; ii2 < doB.length; ++ii2) tempSum += doB[ii2];
+            maxChartValue = Math.max(maxChartValue, tempSum);
+          } else maxChartValue = Math.max(maxChartValue, content.data[cmIndex]);
+        }
+      } else maxChartValue = Helpers.upperMax(content.data);
+      if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
+      var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
+      maxYAxisTickWidth = ctx.measureText(maxYAxisTickWidth).width;
+      maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
+      remainingWidth -= maxYAxisTickWidth;
+      leftXPadding += maxYAxisTickWidth;
+      ctx.restore();
+
+      var rightXPadding = options.paddingPixelsVertical;
+      remainingWidth -= options.paddingPixelsVertical;
+
       /* Draw legend */
       if (content.legend != null && Array.isArray(content.legend)) {
         ctx.save();
@@ -259,42 +295,6 @@ Math.log10 = Math.log10 || function(x) {
 
         ctx.restore();
       }
-
-      /* Compute required left padding */
-      var leftXPadding = options.paddingPixelsVertical;
-      remainingWidth  -= options.paddingPixelsVertical;
-
-      var leftXDrawYLabel = null;
-      if (content.yAxis != null) {
-        leftXDrawYLabel = leftXPadding + options.fontSizeAxes * 0.5;
-        remainingWidth -= options.fontSizeAxes * 1.25;
-        leftXPadding += options.fontSizeAxes * 1.25;
-      }
-
-      ctx.save();
-      ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeTicks, family: options.font });
-      var maxChartValue;
-      if (options.barStyle === 'stacked') {
-        maxChartValue = 0;
-        for (var cmIndex = 0; cmIndex < content.data.length; ++cmIndex) {
-          var doB;
-          if (Array.isArray(doB = content.data[cmIndex])) {
-            var tempSum = 0;
-            for (var ii2 = 0; ii2 < doB.length; ++ii2) tempSum += doB[ii2];
-            maxChartValue = Math.max(maxChartValue, tempSum);
-          } else maxChartValue = Math.max(maxChartValue, content.data[cmIndex]);
-        }
-      } else maxChartValue = Helpers.upperMax(content.data);
-      if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
-      var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
-      maxYAxisTickWidth = ctx.measureText(maxYAxisTickWidth).width;
-      maxYAxisTickWidth = Math.ceil(maxYAxisTickWidth) + options.paddingPixelsTicks;
-      remainingWidth -= maxYAxisTickWidth;
-      leftXPadding += maxYAxisTickWidth;
-      ctx.restore();
-
-      var rightXPadding = options.paddingPixelsVertical;
-      remainingWidth -= options.paddingPixelsVertical;
 
       /* Draw x-axis label of bar chart */
       var bottomYPadding = options.paddingPixelsHorizontal;
