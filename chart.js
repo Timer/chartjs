@@ -595,6 +595,14 @@ Math.log10 = Math.log10 || function(x) {
         var boxHeight = hints.length * lineHeight;
         var drawX = hRect.right + 10, drawY = (hRect.top + hRect.bottom) / 2;
         boxWidth += boxWidthPadding * 2;
+        if (drawX + boxWidth > width) {
+          drawX = hRect.left - boxWidth - 10;
+        }
+        if (drawY - boxHeight / 2 < 0) {
+          drawY = Math.ceil(boxHeight / 2) + 1;
+        } else if (drawY + boxHeight / 2 > height) {
+          drawY = height - boxHeight / 2 - 1;
+        }
         ctx.clearRect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
         ctx.rect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
         ctx.stroke();
