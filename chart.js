@@ -277,7 +277,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.stroke();
         ctx.fill();
 
-        for (var lIndex = 0; lIndex < content.legend.length; ++lIndex) {
+        for (lIndex = 0; lIndex < content.legend.length; ++lIndex) {
           var legLine = Math.floor(lIndex / legendEntriesPerLine);
           var legCol = lIndex % legendEntriesPerLine;
           ctx.fillStyle = content.legend[lIndex].color;
@@ -338,7 +338,7 @@ Math.log10 = Math.log10 || function(x) {
       if (content.dataTags != null) {
         ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontDataTags, family: options.font });
         var dataTags = content.dataTags;
-        for (var index = 0; index < dataTags.length; ++index) {
+        for (index = 0; index < dataTags.length; ++index) {
           if (Array.isArray(dataTags[index])) {
             for (var index2 = 0; index2 < dataTags[index].length; ++index2) {
               reqWidth = Math.max(reqWidth, Math.ceil(ctx.measureText(dataTags[index][index2]).width + 5));
@@ -361,7 +361,7 @@ Math.log10 = Math.log10 || function(x) {
         var tLabel = content.labels[index];
         if (Array.isArray(tLabel)) {
           maxTextStackSize = Math.max(maxTextStackSize, tLabel.length);
-          for (var index2 = 0; index2 < tLabel.length; ++index2) {
+          for (index2 = 0; index2 < tLabel.length; ++index2) {
             maxTextWidth = Math.max(maxTextWidth, ctx.measureText(tLabel[index2]).width);
           }
         } else maxTextWidth = Math.max(maxTextWidth, ctx.measureText(tLabel).width);
@@ -383,12 +383,11 @@ Math.log10 = Math.log10 || function(x) {
         }
         var yUp = options.fontSizeLabels * (maxTextStackSize - 1);
         if (Array.isArray(cLabel)) {
-          var yUp;
           if (xLabelsRotated) {
             yUp = options.fontSizeLabels * (cLabel.length - 1.5);
             yUp /= 2;
           }
-          for (var index2 = 0; index2 < cLabel.length; ++index2) {
+          for (index2 = 0; index2 < cLabel.length; ++index2) {
             ctx.fillText(cLabel[index2], x, y - yUp);
             yUp -= options.fontSizeLabels;
           }
@@ -550,12 +549,12 @@ Math.log10 = Math.log10 || function(x) {
           }
         } else {
           if (vIsArr) v = Helpers.avg(v);
-          var renderBarHeight = Math.round(remainingHeight * (v / maxChartValue));
-          var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
+          var renderBarHeight2 = Math.round(remainingHeight * (v / maxChartValue));
+          var renderUpToY2 = topYPadding + remainingHeight - renderBarHeight2;
           ctx.beginPath();
           ctx.moveTo(renderStartX + computedBarPadding, topYPadding + remainingHeight);
-          ctx.lineTo(renderStartX + computedBarPadding, renderUpToY);
-          ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, renderUpToY);
+          ctx.lineTo(renderStartX + computedBarPadding, renderUpToY2);
+          ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, renderUpToY2);
           ctx.lineTo(renderStartX + (widthPerBar - 1) - computedBarPadding, topYPadding + remainingHeight);
           ctx.stroke();
           ctx.fill();
@@ -566,13 +565,13 @@ Math.log10 = Math.log10 || function(x) {
               var renderBarError = Math.round(remainingHeight * (val / maxChartValue));
               ctx.beginPath();
               var wiskerWidth = Math.round((widthPerBar - computedBarPadding * 2) / 8);
-              var x = leftXPadding + widthPerBar * index + widthPerBar / 2;
-              ctx.moveTo(x - wiskerWidth, renderUpToY + renderBarError);
-              ctx.lineTo(x + wiskerWidth, renderUpToY + renderBarError);
-              ctx.moveTo(x, renderUpToY + renderBarError);
-              ctx.lineTo(x, renderUpToY - renderBarError);
-              ctx.moveTo(x - wiskerWidth, renderUpToY - renderBarError);
-              ctx.lineTo(x + wiskerWidth, renderUpToY - renderBarError);
+              var x_ = leftXPadding + widthPerBar * index + widthPerBar / 2;
+              ctx.moveTo(x_ - wiskerWidth, renderUpToY2 + renderBarError);
+              ctx.lineTo(x_ + wiskerWidth, renderUpToY2 + renderBarError);
+              ctx.moveTo(x_, renderUpToY2 + renderBarError);
+              ctx.lineTo(x_, renderUpToY2 - renderBarError);
+              ctx.moveTo(x_ - wiskerWidth, renderUpToY2 - renderBarError);
+              ctx.lineTo(x_ + wiskerWidth, renderUpToY2 - renderBarError);
               ctx.stroke();
             }
           }
@@ -581,7 +580,7 @@ Math.log10 = Math.log10 || function(x) {
             ctx.fillStyle = 'rgb(0, 0, 0)';
             ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
             ctx.textAlign = 'center';
-            ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
+            ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY2 - 3);
           }
         }
       }
@@ -594,7 +593,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeHint, family: options.font });
         ctx.textAlign = 'left';
         var boxWidth = 0;
-        for (var index = 0; index < hints.length; ++index) {
+        for (index = 0; index < hints.length; ++index) {
           boxWidth = Math.max(boxWidth, Math.ceil(ctx.measureText(hints[index]).width));
         }
         var boxWidthPadding = 5;
@@ -613,7 +612,7 @@ Math.log10 = Math.log10 || function(x) {
         ctx.clearRect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
         ctx.rect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
         ctx.stroke();
-        for (var index = 0; index < hints.length; ++index) {
+        for (index = 0; index < hints.length; ++index) {
           ctx.fillText(hints[index], drawX + boxWidthPadding, drawY - boxHeight / 2 + options.fontSizeHint + index * lineHeight);
         }
         ctx.restore();
