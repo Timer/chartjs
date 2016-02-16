@@ -475,6 +475,7 @@ Math.log10 = Math.log10 || function(x) {
 
       /* Draw bars */
       ctx.save();
+      var lastData = null;
       for (index = 0; index < content.data.length; ++index) {
         var fillColorForIndex = null;
         var strokeColorForIndex = null;
@@ -546,6 +547,83 @@ Math.log10 = Math.log10 || function(x) {
             ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeLabels, family: options.font });
             ctx.textAlign = 'center';
             ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
+          }
+        } else if (options.barStyle === 'line') {
+          if (vIsArr) {
+            var nLData = [];
+            for (var drawIndex = 0; drawIndex < v.length; ++drawIndex) {
+              var renderBarHeight3 = Math.round(remainingHeight * (v[drawIndex] / maxChartValue));
+              var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
+
+              var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
+              if (lastData != null) {
+                var tLX, tLY;
+                if (Array.isArray(lastData)) {
+                  tLX = (lastData[drawIndex] || { }).x;
+                  tLY = (lastData[drawIndex] || { }).y;
+                } else {
+                  tLX = lastData.x;
+                  tLY = lastData.y;
+                }
+
+                if (tLX && tLY) {
+                  ctx.strokeStyle = 'rgb(0, 0, 0)';
+                  ctx.beginPath();
+                  ctx.moveTo(tLX, tLY);
+                  ctx.lineTo(rbx, rby);
+                  ctx.stroke();
+                }
+              }
+
+              if (fillColorForIndex != null && Array.isArray(fillColorForIndex)) {
+                ctx.fillStyle = fillColorForIndex[drawIndex] || options.fillColorBars;
+              }
+              if (strokeColorForIndex != null && Array.isArray(strokeColorForIndex)) {
+                ctx.strokeStyle = strokeColorForIndex[drawIndex] || options.strokeColorBars;
+              }
+              ctx.beginPath();
+              ctx.arc(rbx, rby, 5, 0, 2 * Math.PI);
+              ctx.stroke();
+              ctx.fill();
+
+              nLData[drawIndex] = { x: rbx, y: rby };
+            }
+            lastData = nLData;
+          } else {
+            var renderBarHeight3 = Math.round(remainingHeight * (v / maxChartValue));
+            var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
+
+            var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
+            if (lastData != null) {
+              if (Array.isArray(lastData)) {
+                var tLX, tLY;
+                for (var key in lastData) {
+                  if (!lastData.hasOwnProperty(key)) continue;
+                  tLX = lastData[key].x;
+                  tLY = lastData[key].y;
+                  if (tLX && tLY) {
+                    ctx.beginPath();
+                    ctx.moveTo(tLX, tLY);
+                    ctx.lineTo(rbx, rby);
+                    ctx.stroke();
+                  }
+                }
+              } else {
+                var tLX = lastData.x, tLY = lastData.y;
+                if (tLX && tLY) {
+                  ctx.beginPath();
+                  ctx.moveTo(tLX, tLY);
+                  ctx.lineTo(rbx, rby);
+                  ctx.stroke();
+                }
+              }
+            }
+            ctx.beginPath();
+            ctx.arc(rbx, rby, 5, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fill();
+
+            lastData = { x: rbx, y: rby };
           }
         } else {
           if (vIsArr) v = Helpers.avg(v);
