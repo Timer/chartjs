@@ -375,12 +375,16 @@ Math.log10 = Math.log10 || function(x) {
       } else {
         ctx.textAlign = 'center';
       }
+      var lastLabelY = -options.fontSizeLabels;
       for (index = 0; index < content.labels.length; ++index) {
         var cLabel = content.labels[index];
         var x = leftXPadding + index * widthPerBar + widthPerBar / 2, y = topYPadding + remainingHeight - options.fontSizeLabels / 2;
         if (xLabelsRotated) {
           y = topYPadding + remainingHeight - maxTextWidth + 5;
           y = [x, x = -y][0];
+
+          if (y < lastLabelY + options.fontSizeLabels) continue;
+          lastLabelY = y;
         }
         var yUp = options.fontSizeLabels * (maxTextStackSize - 1);
         if (Array.isArray(cLabel)) {
