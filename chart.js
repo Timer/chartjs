@@ -112,7 +112,8 @@ Math.log10 = Math.log10 || function(x) {
         radiusDot: 5,
         fillColorLegend: 'rgb(230, 230, 230)',
         tickFormatter: null,
-        tickFormatterMeasure: null
+        tickFormatterMeasure: null,
+        fillRegion: 'normal'
       };
       options = options || { };
       for (var key in this.options) {
@@ -413,17 +414,20 @@ Math.log10 = Math.log10 || function(x) {
       ctx.restore();
 
       /* Draw boundaries */
+      var boundX1 = leftXPadding, boundX2 = leftXPadding + remainingWidth;
+      var boundY1 = topYPadding, boundY2 = topYPadding + remainingHeight;
+
       ctx.save();
       ctx.strokeStyle = 'rgb(0, 0, 0)';
       ctx.beginPath();
       if (content.topLabels != null) {
-        ctx.moveTo(leftXPadding + remainingWidth, topYPadding);
-        ctx.lineTo(leftXPadding, topYPadding);
+        ctx.moveTo(boundX2, boundY1);
+        ctx.lineTo(boundX1, boundY1);
       } else {
-        ctx.moveTo(leftXPadding, topYPadding);
+        ctx.moveTo(boundX1, boundY1);
       }
-      ctx.lineTo(leftXPadding, topYPadding + remainingHeight);
-      ctx.lineTo(leftXPadding + remainingWidth, topYPadding + remainingHeight);
+      ctx.lineTo(boundX1, boundY2);
+      ctx.lineTo(boundX2, boundY2);
       if (content.topLabels != null) ctx.lineTo(leftXPadding + remainingWidth, topYPadding);
       ctx.stroke();
       ctx.restore();
@@ -555,12 +559,25 @@ Math.log10 = Math.log10 || function(x) {
           }
         } else if (options.barStyle === 'line') {
           if (vIsArr) {
+            var rbx = renderStartX + widthPerBar / 2;
+
+            if (options.fillRegion === 'background') {
+              var lDu = lastData;
+              if (Array.isArray(lDu)) lDu = lDu[0];
+              if (lDu != null) {
+                var sFS = ctx.fillStyle
+                ctx.fillStyle = lDu.color
+                ctx.fillRect(lDu.x, boundY1, rbx - lDu.x, boundY2 - boundY1)
+                ctx.fillStyle = sFS
+              }
+            }
+
             var nLData = [];
             for (var drawIndex = 0; drawIndex < v.length; ++drawIndex) {
               var renderBarHeight3 = Math.round(remainingHeight * (v[drawIndex] / maxChartValue));
               var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
-              var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
+              var rby = renderUpToY3;
               if (lastData != null) {
                 var tLX, tLY;
                 if (Array.isArray(lastData)) {
@@ -580,18 +597,19 @@ Math.log10 = Math.log10 || function(x) {
                 }
               }
 
-              if (fillColorForIndex != null && Array.isArray(fillColorForIndex)) {
+              if (Array.isArray(fillColorForIndex)) {
                 ctx.fillStyle = fillColorForIndex[drawIndex] || options.fillColorBars;
               }
-              if (strokeColorForIndex != null && Array.isArray(strokeColorForIndex)) {
+              if (Array.isArray(strokeColorForIndex)) {
                 ctx.strokeStyle = strokeColorForIndex[drawIndex] || options.strokeColorBars;
               }
+
               ctx.beginPath();
               ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
               ctx.stroke();
               ctx.fill();
 
-              nLData[drawIndex] = { x: rbx, y: rby };
+              nLData[drawIndex] = { x: rbx, y: rby, color: ctx.fillStyle };
             }
             lastData = nLData;
           } else {
@@ -599,6 +617,21 @@ Math.log10 = Math.log10 || function(x) {
             var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
             var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
+            if (options.fillRegion === 'background') {
+              if (lastData != null) {
+                var lDu = lastData
+                if (Array.isArray(lDu)) lDu = lDu[0];
+                var sFS = ctx.fillStyle
+                ctx.fillStyle = lDu.color
+                ctx.fillRect(lDu.x, boundY1, rbx - lDu.x, boundY2 - boundY1)
+                ctx.fillStyle = sFS
+              }
+            }
+            ctx.beginPath();
+            ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.fill();
+
             if (lastData != null) {
               if (Array.isArray(lastData)) {
                 var tLX, tLY;
@@ -607,6 +640,7 @@ Math.log10 = Math.log10 || function(x) {
                   tLX = lastData[key].x;
                   tLY = lastData[key].y;
                   if (tLX && tLY) {
+                    ctx.strokeStyle = 'rgb(0, 0, 0)';
                     ctx.beginPath();
                     ctx.moveTo(tLX, tLY);
                     ctx.lineTo(rbx, rby);
@@ -616,6 +650,7 @@ Math.log10 = Math.log10 || function(x) {
               } else {
                 var tLX = lastData.x, tLY = lastData.y;
                 if (tLX && tLY) {
+                  ctx.strokeStyle = 'rgb(0, 0, 0)';
                   ctx.beginPath();
                   ctx.moveTo(tLX, tLY);
                   ctx.lineTo(rbx, rby);
@@ -623,12 +658,8 @@ Math.log10 = Math.log10 || function(x) {
                 }
               }
             }
-            ctx.beginPath();
-            ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
-            ctx.stroke();
-            ctx.fill();
 
-            lastData = { x: rbx, y: rby };
+            lastData = { x: rbx, y: rby, color: ctx.fillStyle };
           }
         } else {
           if (vIsArr) v = Helpers.avg(v);
