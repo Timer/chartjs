@@ -109,6 +109,7 @@ Math.log10 = Math.log10 || function(x) {
         stackedBarPadding: 3,
         defaultMaxTick: 0,
         pixelsLegendSquare: 10,
+        radiusDot: 5,
         fillColorLegend: 'rgb(230, 230, 230)',
         tickFormatter: null,
         tickFormatterMeasure: null
@@ -582,7 +583,7 @@ Math.log10 = Math.log10 || function(x) {
                 ctx.strokeStyle = strokeColorForIndex[drawIndex] || options.strokeColorBars;
               }
               ctx.beginPath();
-              ctx.arc(rbx, rby, 5, 0, 2 * Math.PI);
+              ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
               ctx.stroke();
               ctx.fill();
 
@@ -619,7 +620,7 @@ Math.log10 = Math.log10 || function(x) {
               }
             }
             ctx.beginPath();
-            ctx.arc(rbx, rby, 5, 0, 2 * Math.PI);
+            ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.fill();
 
