@@ -101,6 +101,7 @@ Math.log10 = Math.log10 || function(x) {
         paddingPixelsVertical: 10,
         paddingPixelsHorizontal: 10,
         paddingPixelsTicks: 10,
+        maxWidthBars: 0,
         fillColorBackground: 'rgb(255, 255, 255)',
         strokeColorBars: 'rgb(0, 0, 0)',
         fillColorBars: 'rgba(180, 180, 180, 0.25)',
@@ -357,6 +358,8 @@ Math.log10 = Math.log10 || function(x) {
       if (wwh < reqWidth) {
         computedBarPadding -= Math.ceil((reqWidth - wwh) / 2);
         computedBarPadding = Math.max(0, computedBarPadding);
+      } else if (options.maxWidthBars > 0 && wwh > options.maxWidthBars) {
+        computedBarPadding = Math.floor((widthPerBar - options.maxWidthBars) / 2);
       }
       var maxTextWidth = 0, maxTextStackSize = 1;
       for (index = 0; index < content.labels.length; ++index) {
