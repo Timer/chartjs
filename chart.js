@@ -462,7 +462,10 @@ Math.log10 = Math.log10 || function(x) {
       ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeTicks, family: options.font });
       ctx.textAlign = 'right';
       var tickMeta = Helpers.getLinearTicks(0, maxChartValue, Math.max(2, remainingHeight / (options.fontSizeTicks * (1 + options.paddingPercentTicks))));
-      maxChartValue = tickMeta[1] + Math.ceil(maxChartValue / options.fontSizeTicks);
+      var alpha = maxChartValue / options.fontSizeTicks;
+      maxChartValue = tickMeta[1];
+      if (maxChartValue > 1) maxChartValue += Math.ceil(alpha);
+      else maxChartValue += alpha;
       var ticks = [];
       while (tickMeta[0] <= tickMeta[1]) {
         ticks.push(tickMeta[0]);
