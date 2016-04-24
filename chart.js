@@ -244,7 +244,9 @@ Math.log10 = Math.log10 || function(x) {
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
       if (content.bars != null && Array.isArray(content.bars)) {
         for (index = 0; index < content.bars.length; ++index) {
-          maxChartValue = Math.max(maxChartValue, content.bars[index].value);
+          var cbv = content.bars[index].value;
+          if (isNaN(cbv)) continue;
+          maxChartValue = Math.max(maxChartValue, cbv);
         }
       }
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
