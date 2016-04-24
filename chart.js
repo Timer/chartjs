@@ -499,8 +499,8 @@ Math.log10 = Math.log10 || function(x) {
           else ctx.fillStyle = content.fillColor;
         } else ctx.fillStyle = options.fillColorBars;
         if (content.strokeColor != null) {
-          if (Array.isArray(content.strokeColor)) strokeColorForIndex = ctx.fillStyle = content.strokeColor[index];
-          else ctx.fillStyle = content.strokeColor;
+          if (Array.isArray(content.strokeColor)) strokeColorForIndex = ctx.strokeStyle = content.strokeColor[index];
+          else ctx.strokeStyle = content.strokeColor;
         } else ctx.strokeStyle = options.strokeColorBars;
         var v = content.data[index];
         var vIsArr = Array.isArray(v);
@@ -595,7 +595,9 @@ Math.log10 = Math.log10 || function(x) {
                 }
 
                 if (tLX && tLY) {
-                  ctx.strokeStyle = 'rgb(0, 0, 0)';
+                  if (Array.isArray(strokeColorForIndex)) {
+                    ctx.strokeStyle = strokeColorForIndex[drawIndex] || options.strokeColorBars;
+                  } else ctx.strokeStyle = strokeColorForIndex || 'rgb(0, 0, 0)';
                   ctx.beginPath();
                   ctx.moveTo(tLX, tLY);
                   ctx.lineTo(rbx, rby);
@@ -646,7 +648,7 @@ Math.log10 = Math.log10 || function(x) {
                   tLX = lastData[key].x;
                   tLY = lastData[key].y;
                   if (tLX && tLY) {
-                    ctx.strokeStyle = 'rgb(0, 0, 0)';
+                    ctx.strokeStyle = strokeColorForIndex || 'rgb(0, 0, 0)';
                     ctx.beginPath();
                     ctx.moveTo(tLX, tLY);
                     ctx.lineTo(rbx, rby);
@@ -656,7 +658,7 @@ Math.log10 = Math.log10 || function(x) {
               } else {
                 var tLX = lastData.x, tLY = lastData.y;
                 if (tLX && tLY) {
-                  ctx.strokeStyle = 'rgb(0, 0, 0)';
+                  ctx.strokeStyle = strokeColorForIndex || 'rgb(0, 0, 0)';
                   ctx.beginPath();
                   ctx.moveTo(tLX, tLY);
                   ctx.lineTo(rbx, rby);
