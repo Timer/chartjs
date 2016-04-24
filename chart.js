@@ -242,6 +242,11 @@ Math.log10 = Math.log10 || function(x) {
         }
       } else maxChartValue = Helpers.upperMax(content.data);
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
+      if (content.bars != null && Array.isArray(content.bars)) {
+        for (index = 0; index < content.bars.length; ++index) {
+          maxChartValue = Math.max(maxChartValue, content.bars[index].value);
+        }
+      }
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
       if (options.tickFormatterMeasure != null) maxYAxisTickWidth = options.tickFormatterMeasure;
       maxYAxisTickWidth = ctx.measureText(maxYAxisTickWidth).width;
@@ -731,6 +736,23 @@ Math.log10 = Math.log10 || function(x) {
         }
       }
       ctx.restore();
+
+      if (content.bars != null && Array.isArray(content.bars)) {
+        ctx.save();
+        for (index = 0; index < content.bars.length; ++index) {
+          var cBar = content.bars[index];
+          if (cBar.value > maxChartValue) continue;
+          var renderBarY = topYPadding + remainingHeight - Math.round(remainingHeight * (cBar.value / maxChartValue));
+          ctx.strokeStyle = cBar.style;
+          ctx.fillStyle = cBar.style;
+          ctx.beginPath();
+          ctx.moveTo(boundX1, renderBarY);
+          ctx.lineTo(boundX2, renderBarY);
+          ctx.stroke();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
 
       if (this.currentHint != null) {
         ctx.save();
