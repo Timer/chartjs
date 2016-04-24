@@ -620,6 +620,18 @@ Math.log10 = Math.log10 || function(x) {
               nLData[drawIndex] = { x: rbx, y: rby, color: ctx.fillStyle };
             }
             lastData = nLData;
+
+            if (content.balls != null && Array.isArray(content.balls) && index < content.balls.length) {
+              var ball = content.balls[index]
+              if (ball != null) {
+                ctx.beginPath();
+                ctx.fillStyle = ball.fill;
+                ctx.strokeStyle = ball.stroke;
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * (ball.value / maxChartValue)), ball.radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.fill();
+              }
+            }
           } else {
             var renderBarHeight3 = Math.round(remainingHeight * (v / maxChartValue));
             var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
@@ -668,6 +680,18 @@ Math.log10 = Math.log10 || function(x) {
             }
 
             lastData = { x: rbx, y: rby, color: ctx.fillStyle };
+
+            if (content.balls != null && Array.isArray(content.balls) && index < content.balls.length) {
+              var ball = content.balls[index]
+              if (ball != null) {
+                ctx.beginPath();
+                ctx.fillStyle = ball.fill;
+                ctx.strokeStyle = ball.stroke;
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * (ball.value / maxChartValue)), ball.radius, 0, 2 * Math.PI);
+                ctx.stroke();
+                ctx.fill();
+              }
+            }
           }
         } else {
           if (vIsArr) v = Helpers.avg(v);
