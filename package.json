@@ -1,6 +1,6 @@
 {
   "name": "chartjs",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "A charting library in pure javascript.",
   "main": "chart.js",
   "scripts": {
