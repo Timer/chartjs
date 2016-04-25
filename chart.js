@@ -495,6 +495,23 @@ Math.log10 = Math.log10 || function(x) {
       }
       ctx.restore();
 
+      if (content.bars != null && Array.isArray(content.bars)) {
+        ctx.save();
+        for (index = 0; index < content.bars.length; ++index) {
+          var cBar = content.bars[index];
+          if (cBar.value > maxChartValue) continue;
+          var renderBarY = topYPadding + remainingHeight - Math.round(remainingHeight * (cBar.value / maxChartValue));
+          ctx.strokeStyle = cBar.style;
+          ctx.fillStyle = cBar.style;
+          ctx.beginPath();
+          ctx.moveTo(boundX1, renderBarY);
+          ctx.lineTo(boundX2, renderBarY);
+          ctx.stroke();
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
       /* Draw bars */
       ctx.save();
       var lastData = null;
@@ -748,23 +765,6 @@ Math.log10 = Math.log10 || function(x) {
         }
       }
       ctx.restore();
-
-      if (content.bars != null && Array.isArray(content.bars)) {
-        ctx.save();
-        for (index = 0; index < content.bars.length; ++index) {
-          var cBar = content.bars[index];
-          if (cBar.value > maxChartValue) continue;
-          var renderBarY = topYPadding + remainingHeight - Math.round(remainingHeight * (cBar.value / maxChartValue));
-          ctx.strokeStyle = cBar.style;
-          ctx.fillStyle = cBar.style;
-          ctx.beginPath();
-          ctx.moveTo(boundX1, renderBarY);
-          ctx.lineTo(boundX2, renderBarY);
-          ctx.stroke();
-          ctx.fill();
-        }
-        ctx.restore();
-      }
 
       if (this.currentHint != null) {
         ctx.save();
