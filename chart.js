@@ -700,6 +700,16 @@ Math.log10 = Math.log10 || function(x) {
               }
             }
           }
+
+          var hint;
+          if (content.hints != null && (hint = content.hints[index]) != null) {
+            this.mouseListeners.push(function(index, hint, sx, sy, ex, ey, x, y) {
+              var minX = Math.min(sx, ex), maxX = Math.max(sx, ex);
+              var minY = Math.min(sy, ey), maxY = Math.max(sy, ey);
+              if (x < minX || x > maxX || y < minY || y > maxY) return null;
+              return { index: index, drawIndex: drawIndex, rect: { left: minX, right: maxX, top: minY, bottom: maxY }, text: hint.split('\n') };
+            }.bind(this, index, hint, rbx - 1, topYPadding, rbx + 1, topYPadding + remainingHeight));
+          }
         } else {
           if (vIsArr) v = Helpers.avg(v);
           var renderBarHeight2 = Math.round(remainingHeight * (v / maxChartValue));
@@ -780,6 +790,7 @@ Math.log10 = Math.log10 || function(x) {
           drawY = height - boxHeight / 2 - 1;
         }
         ctx.clearRect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
+        ctx.beginPath();
         ctx.rect(drawX, drawY - boxHeight / 2, boxWidth, boxHeight);
         ctx.stroke();
         for (index = 0; index < hints.length; ++index) {
