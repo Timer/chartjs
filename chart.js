@@ -48,13 +48,15 @@ Math.log10 = Math.log10 || function(x) {
     },
     lowerMin: function(arr) {
       if (arr.length === 0) return 0;
-      var v = arr[0];
+      var v = arr[0] || Infinity;
       if (Array.isArray(v)) v = Helpers.lowerMin(v);
       for (var index = 1; index < arr.length; ++index) {
         var v2 = arr[index];
+        if (v2 == null) continue;
         if (Array.isArray(v2)) v2 = Helpers.lowerMin(v2);
         if (v2 < v) v = v2;
       }
+      if (isNaN(v) || !isFinite(v)) v = 0;
       return Math.max(0, v);
     },
     niceNumbers: function(range, round) {
