@@ -348,8 +348,8 @@ Math.log10 = Math.log10 || function(x) {
         ctx.fillStyle = 'rgb(0, 0, 0)';
         ctx.textAlign = 'center';
         ctx.fillText(content.xAxis, (width - remainingWidth) + remainingWidth / 2, topYPadding + remainingHeight - bottomYPadding);
-        remainingHeight -= options.fontSizeAxes;
-        bottomYPadding += options.fontSizeAxes;
+        remainingHeight -= options.fontSizeAxes * 1.5;
+        bottomYPadding += options.fontSizeAxes * 1.5;
         ctx.restore();
       }
 
