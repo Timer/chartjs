@@ -46,6 +46,17 @@ Math.log10 = Math.log10 || function(x) {
       }
       return Math.max(0, v);
     },
+    lowerMin: function(arr) {
+      if (arr.length === 0) return 0;
+      var v = arr[0];
+      if (Array.isArray(v)) v = Helpers.lowerMin(v);
+      for (var index = 1; index < arr.length; ++index) {
+        var v2 = arr[index];
+        if (Array.isArray(v2)) v2 = Helpers.lowerMin(v2);
+        if (v2 < v) v = v2;
+      }
+      return Math.max(0, v);
+    },
     niceNumbers: function(range, round) {
       var exponent = Math.floor(Math.log10(range));
       var fraction = range / Math.pow(10, exponent);
@@ -79,6 +90,9 @@ Math.log10 = Math.log10 || function(x) {
       options.size = options.size || '12';
       options.family = options.family || 'Arial';
       return [options.style, options.variant, options.weight, options.size + 'px', options.family].join(' ');
+    },
+    getAxisRatio: function(min, max, value) {
+      return (value - min) / (max - min);
     }
   };
 
@@ -229,24 +243,34 @@ Math.log10 = Math.log10 || function(x) {
 
       ctx.save();
       ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontSizeTicks, family: options.font });
-      var maxChartValue;
+      var maxChartValue, minChartValue;
       if (options.barStyle === 'stacked') {
         maxChartValue = 0;
+        minChartValue = Infinity;
         for (var cmIndex = 0; cmIndex < content.data.length; ++cmIndex) {
           var doB;
           if (Array.isArray(doB = content.data[cmIndex])) {
             var tempSum = 0;
             for (var ii2 = 0; ii2 < doB.length; ++ii2) tempSum += doB[ii2];
             maxChartValue = Math.max(maxChartValue, tempSum);
-          } else maxChartValue = Math.max(maxChartValue, content.data[cmIndex]);
+            minChartValue = Math.min(minChartValue, tempSum);
+          } else {
+            maxChartValue = Math.max(maxChartValue, content.data[cmIndex]);
+            minChartValue = Math.min(minChartValue, content.data[cmIndex]);
+          }
         }
-      } else maxChartValue = Helpers.upperMax(content.data);
+      } else {
+        maxChartValue = Helpers.upperMax(content.data);
+        minChartValue = Helpers.lowerMin(content.data);
+      }
+      if (options.scaleStyle !== 'adaptive') minChartValue = 0;
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
       if (content.bars != null && Array.isArray(content.bars)) {
         for (index = 0; index < content.bars.length; ++index) {
           var cbv = content.bars[index].value;
           if (isNaN(cbv)) continue;
           maxChartValue = Math.max(maxChartValue, cbv);
+          minChartValue = Math.min(minChartValue, cbv);
         }
       }
       var maxYAxisTickWidth = options.scaleStyle == 'log2' ? Math.ceil(Math.pow(2, maxChartValue)) : (Math.ceil(maxChartValue) + '.00');
@@ -479,7 +503,8 @@ Math.log10 = Math.log10 || function(x) {
         tickMeta[0] += tickMeta[2];
       }
       for (index = 0; index < ticks.length; ++index) {
-        var tickHeight = Math.round(remainingHeight * (ticks[index] / maxChartValue));
+        var tickHeight = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, ticks[index]));
+        if (tickHeight < 0) continue;
         if (options.scaleStyle == 'log2' && ticks[index] !== 0) ticks[index] = Math.round(Math.pow(2, ticks[index]));
         else ticks[index] = Math.floor(ticks[index] * 100) / 100;
         if (options.tickFormatter != null && typeof options.tickFormatter === 'function') {
@@ -500,7 +525,7 @@ Math.log10 = Math.log10 || function(x) {
         for (index = 0; index < content.bars.length; ++index) {
           var cBar = content.bars[index];
           if (cBar.value > maxChartValue) continue;
-          var renderBarY = topYPadding + remainingHeight - Math.round(remainingHeight * (cBar.value / maxChartValue));
+          var renderBarY = topYPadding + remainingHeight - Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, cBar.value));
           ctx.strokeStyle = cBar.style;
           ctx.fillStyle = cBar.style;
           ctx.beginPath();
@@ -540,7 +565,7 @@ Math.log10 = Math.log10 || function(x) {
             }
 
             runningValue += v[drawIndex];
-            var renderBarHeight = Math.floor(remainingHeight * (runningValue / maxChartValue));
+            var renderBarHeight = Math.floor(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, runningValue));
             var renderUpToY = topYPadding + remainingHeight - renderBarHeight;
             if (Math.abs(renderBarHeight - lastHeight) < options.stackedBarPadding + 2) {
               lastHeight = renderBarHeight;
@@ -604,7 +629,7 @@ Math.log10 = Math.log10 || function(x) {
 
             var nLData = [];
             for (var drawIndex = 0; drawIndex < v.length; ++drawIndex) {
-              var renderBarHeight3 = Math.round(remainingHeight * (v[drawIndex] / maxChartValue));
+              var renderBarHeight3 = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, v[drawIndex]));
               var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
               var rby = renderUpToY3;
@@ -651,13 +676,13 @@ Math.log10 = Math.log10 || function(x) {
                 ctx.beginPath();
                 ctx.fillStyle = ball.fill;
                 ctx.strokeStyle = ball.stroke;
-                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * (ball.value / maxChartValue)), ball.radius, 0, 2 * Math.PI);
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, ball.value)), ball.radius, 0, 2 * Math.PI);
                 ctx.stroke();
                 ctx.fill();
               }
             }
           } else {
-            var renderBarHeight3 = Math.round(remainingHeight * (v / maxChartValue));
+            var renderBarHeight3 = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, v));
             var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
             var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
@@ -711,7 +736,7 @@ Math.log10 = Math.log10 || function(x) {
                 ctx.beginPath();
                 ctx.fillStyle = ball.fill;
                 ctx.strokeStyle = ball.stroke;
-                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * (ball.value / maxChartValue)), ball.radius, 0, 2 * Math.PI);
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, ball.value)), ball.radius, 0, 2 * Math.PI);
                 ctx.stroke();
                 ctx.fill();
               }
@@ -729,7 +754,7 @@ Math.log10 = Math.log10 || function(x) {
           }
         } else {
           if (vIsArr) v = Helpers.avg(v);
-          var renderBarHeight2 = Math.round(remainingHeight * (v / maxChartValue));
+          var renderBarHeight2 = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, v));
           var renderUpToY2 = topYPadding + remainingHeight - renderBarHeight2;
           ctx.beginPath();
           ctx.moveTo(renderStartX + computedBarPadding, topYPadding + remainingHeight);
@@ -742,7 +767,7 @@ Math.log10 = Math.log10 || function(x) {
           if (options.barStyle === 'error') {
             var val;
             if ((val = content._data_standard_error[index]) != 0) {
-              var renderBarError = Math.round(remainingHeight * (val / maxChartValue));
+              var renderBarError = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, val));
               ctx.beginPath();
               var wiskerWidth = Math.round((widthPerBar - computedBarPadding * 2) / 8);
               var x_ = leftXPadding + widthPerBar * index + widthPerBar / 2;
