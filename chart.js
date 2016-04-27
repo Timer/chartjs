@@ -682,7 +682,7 @@ Math.log10 = Math.log10 || function(x) {
                 ctx.beginPath();
                 ctx.fillStyle = ball.fill;
                 ctx.strokeStyle = ball.stroke;
-                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, ball.value)), ball.radius, 0, 2 * Math.PI);
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, minChartValue + ball.value)), ball.radius, 0, 2 * Math.PI);
                 ctx.stroke();
                 ctx.fill();
               }
@@ -742,7 +742,7 @@ Math.log10 = Math.log10 || function(x) {
                 ctx.beginPath();
                 ctx.fillStyle = ball.fill;
                 ctx.strokeStyle = ball.stroke;
-                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, ball.value)), ball.radius, 0, 2 * Math.PI);
+                ctx.arc(rbx, topYPadding + remainingHeight - (remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, minChartValue + ball.value)), ball.radius, 0, 2 * Math.PI);
                 ctx.stroke();
                 ctx.fill();
               }
