@@ -267,7 +267,9 @@ Math.log10 = Math.log10 || function(x) {
       }
       if (options.scaleStyle.indexOf('adaptive') === 0) {
         if (options.scaleStyle.indexOf(':') !== -1) {
-          minChartValue *= parseFloat(options.scaleStyle.split(/[:]/)[1]);
+          var floater = parseFloat(options.scaleStyle.split(/[:]/)[1]);
+          minChartValue *= floater;
+          maxChartValue *= 1 + (1 - floater) / 2.0;
         }
       } else minChartValue = 0;
       if (options.defaultMaxTick > maxChartValue) maxChartValue = options.defaultMaxTick;
