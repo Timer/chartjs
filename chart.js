@@ -138,6 +138,7 @@ Math.log10 = Math.log10 || function(x) {
       }
       this.ctx = ctx;
       this.content = { };
+      this.labelPositions = { }
     }
 
     BarChart.prototype.update = function(content) {
@@ -201,6 +202,7 @@ Math.log10 = Math.log10 || function(x) {
     };
 
     BarChart.prototype._draw = function() {
+      var labelPositions = { }
       this.mouseListeners = [];
 
       var options = this.options;
@@ -458,6 +460,12 @@ Math.log10 = Math.log10 || function(x) {
       /* Draw boundaries */
       var boundX1 = leftXPadding, boundX2 = leftXPadding + remainingWidth;
       var boundY1 = topYPadding, boundY2 = topYPadding + remainingHeight;
+
+      for (index = 0; index < content.labels.length; ++index) labelPositions[index] = {
+        xStart: leftXPadding + index * widthPerBar,
+        xEnd: leftXPadding + (1 + index) * widthPerBar,
+        yStart: boundY1, yEnd: boundY2
+      }
 
       ctx.save();
       ctx.strokeStyle = 'rgb(0, 0, 0)';
@@ -833,6 +841,8 @@ Math.log10 = Math.log10 || function(x) {
       }
 
       ctx.translate(0.5, 0.5);
+
+      this.labelPositions = labelPositions;
     };
 
     return BarChart;
