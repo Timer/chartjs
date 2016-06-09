@@ -102,6 +102,7 @@ Math.log10 = Math.log10 || function(x) {
     function BarChart(ctx, options) {
       this.mouseListeners = [];
       this.currentHint = null;
+      this.fillRegions = []
       this.options = {
         font: 'Helvetica',
         fontWeight: 'normal',
@@ -204,6 +205,7 @@ Math.log10 = Math.log10 || function(x) {
     BarChart.prototype._draw = function() {
       var labelPositions = { }
       this.mouseListeners = [];
+      this.fillRegions = [];
 
       var options = this.options;
       var ctx = this.ctx, content = this.content;
@@ -610,7 +612,7 @@ Math.log10 = Math.log10 || function(x) {
             }
 
             var tagText;
-            if (tSY - renderUpToY > options.fontDataTags * 1.25 && content.dataTags != null && (tagText = content.dataTags[index]) !== null && (tagText = tagText[drawIndex]) !== null) {
+            if (tSY - renderUpToY > options.fontDataTags * 1.25 && content.dataTags != null && (tagText = content.dataTags[index]) != null && (tagText = tagText[drawIndex]) != null) {
               var oFS = ctx.fillStyle;
               ctx.fillStyle = 'rgb(0, 0, 0)';
               ctx.font = Helpers.getFont({ weight: options.fontWeight, size: options.fontDataTags, family: options.font });
@@ -632,8 +634,9 @@ Math.log10 = Math.log10 || function(x) {
           if (vIsArr) {
             var rbx = renderStartX + widthPerBar / 2;
 
+            var lDu;
             if (options.fillRegion === 'background') {
-              var lDu = lastData;
+              lDu = lastData;
               if (Array.isArray(lDu)) lDu = lDu[0];
               if (lDu != null) {
                 var sFS = ctx.fillStyle
@@ -685,6 +688,12 @@ Math.log10 = Math.log10 || function(x) {
               nLData[drawIndex] = { x: rbx, y: rby, color: ctx.fillStyle };
             }
             lastData = nLData;
+            if (lDu != null && lDu.color != lastData[0].color) this.fillRegions.push({
+              x: lastData[0].x,
+              y: lastData[0].y,
+              prev: lDu.color,
+              next: lastData[0].color
+            })
 
             if (content.balls != null && Array.isArray(content.balls) && index < content.balls.length) {
               var ball = content.balls[index]
@@ -702,9 +711,10 @@ Math.log10 = Math.log10 || function(x) {
             var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
             var rbx = renderStartX + widthPerBar / 2, rby = renderUpToY3;
+            var lDu;
             if (options.fillRegion === 'background') {
               if (lastData != null) {
-                var lDu = lastData
+                lDu = lastData;
                 if (Array.isArray(lDu)) lDu = lDu[0];
                 var sFS = ctx.fillStyle
                 ctx.fillStyle = lDu.color
@@ -745,6 +755,12 @@ Math.log10 = Math.log10 || function(x) {
             }
 
             lastData = { x: rbx, y: rby, color: ctx.fillStyle };
+            if (lDu != null && lDu.color != lastData.color) this.fillRegions.push({
+              x: lastData.x,
+              y: lastData.y,
+              prev: lDu.color,
+              next: lastData.color
+            })
 
             if (content.balls != null && Array.isArray(content.balls) && index < content.balls.length) {
               var ball = content.balls[index]
