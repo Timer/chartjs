@@ -630,8 +630,8 @@ Math.log10 = Math.log10 || function(x) {
             ctx.textAlign = 'center';
             ctx.fillText(content.barTooltips[index] || '', renderStartX + widthPerBar / 2, renderUpToY - 3);
           }
-        } else if (options.barStyle === 'line') {
-          if (vIsArr) {
+        } else if (options.barStyle === 'line' || options.barStyle === 'line-error') {
+          if (vIsArr && options.barStyle !== 'line-error') {
             var rbx = renderStartX + widthPerBar / 2;
 
             var lDu;
@@ -707,6 +707,7 @@ Math.log10 = Math.log10 || function(x) {
               }
             }
           } else {
+            if (vIsArr) v = Helpers.avg(v)
             var renderBarHeight3 = Math.round(remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, v));
             var renderUpToY3 = topYPadding + remainingHeight - renderBarHeight3;
 
@@ -726,6 +727,23 @@ Math.log10 = Math.log10 || function(x) {
             ctx.arc(rbx, rby, options.radiusDot, 0, 2 * Math.PI);
             ctx.stroke();
             ctx.fill();
+
+            if (options.barStyle === 'line-error') {
+              ctx.strokeStyle = 'rgb(0, 0, 0)';
+              var val;
+              if ((val = content._data_standard_error[index]) != 0) {
+                var renderBarError = remainingHeight * Helpers.getAxisRatio(minChartValue, maxChartValue, val);
+                ctx.beginPath();
+                var wiskerWidth = Math.round((widthPerBar - computedBarPadding * 2) / 8);
+                ctx.moveTo(rbx - wiskerWidth, rby + renderBarError);
+                ctx.lineTo(rbx + wiskerWidth, rby + renderBarError);
+                ctx.moveTo(rbx, rby + renderBarError);
+                ctx.lineTo(rbx, rby - renderBarError);
+                ctx.moveTo(rbx - wiskerWidth, rby - renderBarError);
+                ctx.lineTo(rbx + wiskerWidth, rby - renderBarError);
+                ctx.stroke();
+              }
+            }
 
             if (lastData != null) {
               if (Array.isArray(lastData)) {
